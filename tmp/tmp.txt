@@ -1,0 +1,1 @@
+This file was created to make GitHub upload an empty folder, which is necessary for the API to work.
