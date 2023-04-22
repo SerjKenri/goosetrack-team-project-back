@@ -1,10 +1,14 @@
+// require('dotenv').config();
 const sendEmail = require('../../service/mailService');
 
 const {
   createUser,
   verifyUser,
   checkVerification,
+  logUser,
+  saveTokenForUser,
 } = require('../../utils/authUtils');
+const { signToken } = require('../../service/JWTServices');
 
 const postUser = async (req, res) => {
   const newUser = await createUser(req.body);
@@ -17,10 +21,14 @@ const postUser = async (req, res) => {
 
   const { name, email, verificationToken } = newUser;
 
+  console.log('0000000000', process.env.DEV_URL);
+
+  console.log('11111111111', verificationToken);
+
   const verifyEmail = {
     to: email,
     subject: 'Test email',
-    html: `<strong>Please verify your email</strong> <a target="_blank" href="${process.env.BASE_URL}api/users/verify/${verificationToken}"> Click the link</a>`,
+    html: `<strong>Please verify your email</strong> <a target="_blank" href="${process.env.DEV_URL}/api/auth/verify/${verificationToken}"> Click the link </a>`,
   };
 
   await sendEmail(verifyEmail);
@@ -58,7 +66,7 @@ const postVerifiedUser = async (req, res) => {
     to: email,
     subject: 'Test email',
     // text: "Please verify your email",
-    html: `<strong>Please verify your email</strong> <a target="blank" href="${process.env.BASE_URL}api/users/verify/${verifiedUser.verificationToken}">Click the link</a>`,
+    html: `<strong>Please verify your email</strong> <a target="blank" href="${process.env.DEV_URL}/api/auth/verify/${verifiedUser.verificationToken}"> Click the link </a>`,
   };
 
   await sendEmail(verifyEmail);
@@ -66,7 +74,36 @@ const postVerifiedUser = async (req, res) => {
   res.status(200).json({ message: 'Verification email sent' });
 };
 
-const postLoggedUser = async (req, res) => {};
+const postLoggedUser = async (req, res) => {
+  const { password } = req.body;
+
+  const user = await logUser(req.body);
+
+  if (!user) {
+    return res.status(401).json({ message: 'Email or password is wrong' });
+  }
+
+  if (!user.verify) {
+    return res.status(401).json({ message: 'Email is not verified' });
+  }
+
+  const passwordIsValid = await user.checkPassword(password, user.password);
+
+  if (!passwordIsValid) {
+    return res.status(401).json({ message: 'Email or password is wrong' });
+  }
+
+  user.password = undefined;
+
+  const token = signToken(user.id);
+
+  const { id, name, email, verify } = await saveTokenForUser(user.id, {
+    token,
+    user,
+  });
+
+  res.status(200).json({ user: { id, name, email, verify, token } });
+};
 
 module.exports = {
   postUser,
