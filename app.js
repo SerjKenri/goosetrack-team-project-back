@@ -5,7 +5,7 @@ const mongoose = require('mongoose');
 const authRouter = require('./routes/api/authRoutes');
 const tasksRouter = require('./routes/api/tasksRoutes');
 const userRouter = require('./routes/api/userRoutes');
-require('dotenv').config();
+require('dotenv').config({ path: './.env' });
 
 const app = express();
 
