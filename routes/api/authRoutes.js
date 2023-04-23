@@ -10,12 +10,19 @@ const {
   getUserVerification,
 } = require('../../controllers/auth/authControllers');
 
-router.post('/register', ctrlWrapper(postUser));
+
+const {
+  userRegValidation,
+  userLoginValidation,
+  userVerifyValidation,
+} = require('../../middlewares/authValidation');
+
+router.post('/register', userRegValidation, ctrlWrapper(postUser));
 
 router.get('/verify/:verificationToken', ctrlWrapper(getUserVerification));
 
-router.post('/verify', ctrlWrapper(postVerifiedUser));
+router.post('/verify', userVerifyValidation, ctrlWrapper(postVerifiedUser));
 
-router.post('/login', ctrlWrapper(postLoggedUser));
+router.post('/login', userLoginValidation, ctrlWrapper(postLoggedUser));
 
 module.exports = router;

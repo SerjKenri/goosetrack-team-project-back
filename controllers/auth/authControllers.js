@@ -1,4 +1,3 @@
-// require('dotenv').config();
 const sendEmail = require('../../service/mailService');
 
 const {
@@ -10,7 +9,7 @@ const {
 } = require('../../utils/authUtils');
 const { signToken } = require('../../service/JWTServices');
 
-const postUser = async (req, res) => {
+const postUser = async (req, res, next) => {
   const newUser = await createUser(req.body);
 
   if (!newUser) {
@@ -20,10 +19,6 @@ const postUser = async (req, res) => {
   newUser.password = undefined;
 
   const { name, email, verificationToken } = newUser;
-
-  console.log('0000000000', process.env.DEV_URL);
-
-  console.log('11111111111', verificationToken);
 
   const verifyEmail = {
     to: email,
@@ -65,7 +60,6 @@ const postVerifiedUser = async (req, res) => {
   const verifyEmail = {
     to: email,
     subject: 'Test email',
-    // text: "Please verify your email",
     html: `<strong>Please verify your email</strong> <a target="blank" href="${process.env.DEV_URL}/api/auth/verify/${verifiedUser.verificationToken}"> Click the link </a>`,
   };
 
