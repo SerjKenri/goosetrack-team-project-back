@@ -11,7 +11,7 @@ const {
   updateTask,
 } = require('../../controllers/tasks/taskControllers');
 
-// tasksRouter.use(protectedRout);
+tasksRouter.use(protectedRout);
 
 tasksRouter.get('/', ctrlWrapper(getTasks));
 tasksRouter.post('/', ctrlWrapper(addTask));

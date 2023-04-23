@@ -36,8 +36,13 @@ app.use((req, res) => {
   res.status(404).json({ message: 'Page not found' });
 });
 
-app.use((err, req, res, next) => {
-  res.status(500).json({ message: err.message });
+// app.use((err, req, res, next) => {
+//   res.status(500).json({ message: err.message });
+// });
+
+app.use((err, _, res, __) => {
+  const { status = 500, message = 'Internal Server Error' } = err;
+  res.status(status).json({ message });
 });
 
 module.exports = app;
