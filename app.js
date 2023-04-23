@@ -5,7 +5,7 @@ const mongoose = require('mongoose');
 const authRouter = require('./routes/api/authRoutes');
 const tasksRouter = require('./routes/api/tasksRoutes');
 const userRouter = require('./routes/api/userRoutes');
-require('dotenv').config();
+require('dotenv').config({ path: './.env' });
 
 const app = express();
 
@@ -36,8 +36,13 @@ app.use((req, res) => {
   res.status(404).json({ message: 'Page not found' });
 });
 
-app.use((err, req, res, next) => {
-  res.status(500).json({ message: err.message });
+// app.use((err, req, res, next) => {
+//   res.status(500).json({ message: err.message });
+// });
+
+app.use((err, _, res, __) => {
+  const { status = 500, message = 'Internal Server Error' } = err;
+  res.status(status).json({ message });
 });
 
 console.log('process.env', process.env.PORT);

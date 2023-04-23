@@ -2,11 +2,24 @@ const express = require('express');
 const tasksRouter = express.Router();
 
 const ctrlWrapper = require('../../middlewares/ctrlWrapper');
-const ctrl = require('../../controllers/tasks');
+const protectedRout = require('../../middlewares/authMiddleware');
 
-tasksRouter.get('/', ctrlWrapper(ctrl.getTasks));
-tasksRouter.post('/', ctrlWrapper(ctrl.addTask));
-tasksRouter.patch('/:id', ctrlWrapper(ctrl.updateTask));
-tasksRouter.delete('/:id', ctrlWrapper(ctrl.deleteTask));
+const taskSchema = require('../../service/schemas/taskJoiSchema');
+const validation = require('../../middlewares/joiValidation');
+
+const {
+  getTasks,
+  addTask,
+  deleteTask,
+  updateTask,
+} = require('../../controllers/tasks/taskControllers');
+
+
+tasksRouter.use(protectedRout);
+
+tasksRouter.get('/', ctrlWrapper(getTasks));
+tasksRouter.post('/', validation(taskSchema), ctrlWrapper(addTask));
+tasksRouter.patch('/:id', ctrlWrapper(updateTask));
+tasksRouter.delete('/:id', ctrlWrapper(deleteTask));
 
 module.exports = tasksRouter;
