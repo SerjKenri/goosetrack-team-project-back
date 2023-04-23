@@ -22,6 +22,10 @@ const taskSchema = Schema(
       type: String,
       required: true,
     },
+    day: {
+      type: String,
+      required: true,
+    },
     owner: {
       type: Schema.Types.ObjectId,
       ref: 'user',
