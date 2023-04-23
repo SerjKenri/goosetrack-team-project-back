@@ -28,13 +28,13 @@ const taskSchema = Schema(
     },
     priority: {
       type: String,
-      enum: ['Low', 'Medium', 'High'],
-      default: 'Low',
+      enum: ['low', 'medium', 'high'],
+      default: 'low',
     },
     status: {
       type: String,
-      enum: ['To do', 'In progress', 'Done'],
-      default: 'To do',
+      enum: ['toDo', 'inProgress', 'done'],
+      default: 'toDo',
     },
   },
   { versionKey: false }
