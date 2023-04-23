@@ -40,8 +40,28 @@ const checkVerification = async body => {
   }
 };
 
+const logUser = async body => {
+  try {
+    const { email } = body;
+
+    return await User.findOne({ email });
+  } catch (error) {
+    console.log(error.message);
+  }
+};
+
+const saveTokenForUser = async (id, body) => {
+  try {
+    return await User.findByIdAndUpdate(id, body, { new: true });
+  } catch (error) {
+    console.log(error.message);
+  }
+};
+
 module.exports = {
   createUser,
   verifyUser,
   checkVerification,
+  logUser,
+  saveTokenForUser,
 };
