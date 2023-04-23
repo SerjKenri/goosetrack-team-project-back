@@ -8,11 +8,12 @@ const {
 const {
   patchUpdateUserValidation,
 } = require('../../middlewares/userValidation');
+const protectedRout = require('../../middlewares/authMiddleware');
 const userRouter = express.Router();
 
 // Protected routes
 
-// userRouter.use('/', protectedWithToken);
+userRouter.use('/', protectedRout);
 
 userRouter.get('/current', ctrlWrapper(currentUser));
 userRouter.post('/logout', ctrlWrapper(logoutUser));
