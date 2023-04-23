@@ -30,7 +30,8 @@ const addTask = async (req, res, next) => {
 };
 
 const deleteTask = async (req, res, next) => {
-  await removeTask(req.params.id);
+  const { _id } = req.user;
+  await removeTask(req.params.id, _id);
   res.status(200).json({ message: 'task deleted' });
 };
 
@@ -39,7 +40,7 @@ const updateTask = async (req, res, next) => {
   const { _id } = req.user;
   const body = req.body;
 
-  const result = await updateTaskById(id, body);
+  const result = await updateTaskById(id, _id, body);
   res.json(result);
 };
 

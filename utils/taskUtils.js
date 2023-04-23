@@ -14,20 +14,24 @@ const findTasks = async (owner, year, month) => {
   return tasks;
 };
 
-const removeTask = async id => {
-  const task = await Task.findByIdAndRemove(id);
+const removeTask = async (_id, owner) => {
+  // const task = await Task.findByIdAndRemove(id);
+  const task = await Task.findOneAndDelete({ _id, owner });
+
   if (!task) throw new NotFound('Task has not been found');
 
   return task;
 };
 
-const updateTaskById = async (id, body) => {
-  try {
-    const task = await Task.findByIdAndUpdate(id, { ...body }, { new: true });
-    return task;
-  } catch (error) {
-    throw new NotFound('Task has not been found');
-  }
+const updateTaskById = async (_id, owner, body) => {
+  // const task = await Task.findByIdAndUpdate(id, { ...body }, { new: true });
+  const task = await Task.findOneAndUpdate(
+    { _id, owner },
+    { ...body },
+    { new: true }
+  );
+  if (!task) throw new NotFound('Task has not been found');
+  return task;
 };
 
 module.exports = {
