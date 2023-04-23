@@ -16,9 +16,11 @@ const taskSchema = Schema(
     },
     year: {
       type: String,
+      required: true,
     },
     month: {
       type: String,
+      required: true,
     },
     owner: {
       type: Schema.Types.ObjectId,
