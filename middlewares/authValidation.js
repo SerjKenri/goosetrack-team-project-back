@@ -11,7 +11,9 @@ const userRegValidation = (req, res, next) => {
         minDomainSegments: 2,
       })
       .required(),
-    password: Joi.string().regex(PASSWD_REGEX).required(),
+    password: Joi.string()
+      // .regex(PASSWD_REGEX)
+      .required(),
   });
 
   const validationResult = schema.validate(req.body);
