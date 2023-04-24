@@ -5,7 +5,13 @@ const mongoose = require('mongoose');
 const authRouter = require('./routes/api/authRoutes');
 const tasksRouter = require('./routes/api/tasksRoutes');
 const userRouter = require('./routes/api/userRoutes');
+const { swaggerSetups } = require('./service/swaggerService');
 require('dotenv').config({ path: './.env' });
+
+//swagger setup
+const swaggerUi = require('swagger-ui-express');
+const swaggerSpec = swaggerSetups();
+// swagger end
 
 const app = express();
 
@@ -22,9 +28,14 @@ mongoose
     process.exit(1);
   });
 
+//Swager start
+// app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+//Swager end
+
 app.use(logger(formatsLogger));
 app.use(cors());
 app.use(express.json());
+app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 //Routes
 app.use('/api/auth', authRouter);
@@ -44,5 +55,7 @@ app.use((err, _, res, __) => {
   const { status = 500, message = 'Internal Server Error' } = err;
   res.status(status).json({ message });
 });
+
+console.log('process.env', process.env.PORT);
 
 module.exports = app;
