@@ -157,3 +157,4 @@
                       type: string
                       description: The user's access token.
                       example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0MzcwYmE2ZjUxZmNlYzMzY2M2NzZiYiIsImlhdCI6MTY4MTMyOTE1MiwiZXhwIjoxNjgxNDE1NTUyfQ.wv9sAH85K6NmXjamFF0lpCAIK6UseTFKdqMtdaFY9FM
+

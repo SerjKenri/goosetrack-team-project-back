@@ -1,0 +1,161 @@
+# -----//  Scheme for protected Routs  //-----
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+# to protect rout, you should add "security: - bearerAuth: []"
+# Example:
+#   get:
+#     security:
+#       - bearerAuth: []
+#     summary: Retrieve user information.
+#     ...
+
+# -----//  User docs  //-----
+# get user
+/api/user/current:
+  get:
+    security:
+      - bearerAuth: []
+    summary: Retrieve user information.
+    tags:
+      - User
+    description: Retrieve detailed user information.
+    responses:
+      200:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                      description: The user ID.
+                      example: 64450b66b62acbe0e8144e25
+                    name:
+                      type: string
+                      description: The user's name.
+                      example: Leanne Graham
+                    email:
+                      type: string
+                      description: The user's email.
+                      example: wasem43302@gam1fy.com
+                    avatarURL:
+                      type: string
+                      description: Link to the user's avatar.
+                      example: https://console.cloudinary.com/console/c-fe36772524833d53cebdde791b3244/media_library/search?q=
+                    birthDay:
+                      type: date
+                      description: The user's birthday.
+                      example: 01.01.2000
+                    phone:
+                      type: string
+                      description: The user's phone.
+                      example: +380971234567
+                    messenger:
+                      type: string
+                      description: The user's messenger.
+                      example: 1234567
+      401:
+        description: User is not authorized
+
+# logout user
+/api/user/logout:
+  post:
+    security:
+      - bearerAuth: []
+    summary: Logout user.
+    tags:
+      - User
+    description: Logout user from app.
+    responses:
+      204:
+      401:
+        description: User is not authorized
+
+# update user
+/api/user/info:
+  patch:
+    security:
+      - bearerAuth: []
+    summary: Update user information.
+    tags:
+      - User
+    description: Update or add user information.
+    requestBody:
+      required: true
+      content:
+        multipart/form-data:
+          schema:
+            type: object
+            properties:
+              name:
+                type: string
+                description: The user's name.
+                example: Leanne Graham
+              email:
+                type: string
+                description: The user's email.
+                example: wasem43302@gam1fy.com
+              avatarURL:
+                type: file
+                description: Avatar file.
+              birthDay:
+                type: date
+                description: The user's birthday.
+                example: 01.01.2000
+              phone:
+                type: string
+                description: The user's phone.
+                example: +380971234567
+              messenger:
+                type: string
+                description: The user's messenger.
+                example: 1234567
+    responses:
+      200:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                      description: The user ID.
+                      example: 64450b66b62acbe0e8144e25
+                    name:
+                      type: string
+                      description: The user's name.
+                      example: Leanne Graham
+                    email:
+                      type: string
+                      description: The user's email.
+                      example: wasem43302@gam1fy.com
+                    avatarURL:
+                      type: string
+                      description: Link to the user's avatar.
+                      example: https://console.cloudinary.com/console/c-fe36772524833d53cebdde791b3244/media_library/search?q=
+                    birthDay:
+                      type: date
+                      description: The user's birthday.
+                      example: 01.01.2000
+                    phone:
+                      type: string
+                      description: The user's phone.
+                      example: +380971234567
+                    messenger:
+                      type: string
+                      description: The user's messenger.
+                      example: 1234567
+      400:
+        description: The request cannot be completed
+      401:
+        description: User is not authorized

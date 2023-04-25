@@ -1,5 +1,7 @@
 const { Schema, model } = require('mongoose');
 
+const { PRIORITY, STATUS } = require('../constants/taskConstants');
+
 const taskSchema = Schema(
   {
     title: {
@@ -32,13 +34,13 @@ const taskSchema = Schema(
     },
     priority: {
       type: String,
-      enum: ['low', 'medium', 'high'],
-      default: 'low',
+      enum: Object.values(PRIORITY), // ["low","medium","high"]
+      default: PRIORITY.LOW,
     },
     status: {
       type: String,
-      enum: ['toDo', 'inProgress', 'done'],
-      default: 'toDo',
+      enum: Object.values(STATUS), // ["toDo","inProgress","done"]
+      default: STATUS.TODO,
     },
   },
   { versionKey: false }

@@ -6,7 +6,6 @@ const {
 } = require('../../utils/taskUtils');
 
 const getTasks = async (req, res, next) => {
-
   const { _id } = req.user;
   const { year, month } = req.query;
   const tasks = await findTasks(_id, year, month);
@@ -15,9 +14,7 @@ const getTasks = async (req, res, next) => {
 };
 
 const addTask = async (req, res, next) => {
-
   const { _id } = req.user;
-
 
   //      Приклад того, що приходить з фронту
   //  {
@@ -28,18 +25,15 @@ const addTask = async (req, res, next) => {
   //     "month": "12"
   //   }
 
-
   const task = await createTask({ ...req.body, owner: _id });
 
   return res.status(201).json(task);
 };
 
 const deleteTask = async (req, res, next) => {
-
   const { _id } = req.user;
   await removeTask(req.params.id, _id);
-  res.status(200).json({ message: 'task deleted' });
-
+  res.status(204).json();
 };
 
 const updateTask = async (req, res, next) => {

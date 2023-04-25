@@ -16,7 +16,20 @@ const swaggerSetups = () => {
         url: 'https://serjkenri.github.io/goosetrack-team-project-front/',
       },
     },
-
+    components: {
+      securitySchemes: {
+        bearerAuth: {
+          type: 'http',
+          scheme: 'bearer',
+          bearerFormat: 'JWT',
+        },
+      },
+    },
+    security: [
+      {
+        bearerAuth: [],
+      },
+    ],
     servers: [
       {
         url: process.env.DEV_URL,
@@ -28,7 +41,7 @@ const swaggerSetups = () => {
   const options = {
     swaggerDefinition,
     // Paths to files containing OpenAPI definitions
-    apis: ['./routes/api/*.js'],
+    apis: ['./routes/api/*.js', './service/swaggerDocs/*.yaml'],
   };
 
   const swaggerSpec = swaggerJSDoc(options);
