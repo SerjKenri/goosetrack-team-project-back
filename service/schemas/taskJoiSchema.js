@@ -1,5 +1,7 @@
 const Joi = require('joi');
 
+const { PRIORITY, STATUS } = require('../../constants/taskConstants');
+
 const TIME_REGEX = /^([0-9]{2})\:([0-9]{2})$/;
 
 const taskJoiSchema = Joi.object({
@@ -15,8 +17,8 @@ const taskJoiSchema = Joi.object({
     .max(2)
     .regex(/^([0-3]{1})([0-9]{1})$/)
     .required(),
-  status: Joi.string().valid('toDo', 'inProgress', 'done'),
-  priority: Joi.string().valid('low', 'medium', 'high'),
+  status: Joi.string().valid(...Object.values(STATUS)), // ["low","medium","high"]
+  priority: Joi.string().valid(...Object.values(PRIORITY)), // ["toDo","inProgress","done"]
 });
 
 module.exports = taskJoiSchema;
