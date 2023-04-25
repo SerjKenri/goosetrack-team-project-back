@@ -73,7 +73,8 @@ const postLoggedUser = async (req, res) => {
   const user = await logUser(req.body);
 
   if (!user) {
-    return next(new AppError(401, 'Email or password is wrong'));
+    return res.status(401).json({ message: 'Email or password is wrong' });
+    // return next(new AppError(401, 'Email or password is wrong'));
   }
 
   if (!user.verify) {

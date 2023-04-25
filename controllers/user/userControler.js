@@ -5,8 +5,6 @@ const {
 } = require('../../utils/userUtils');
 
 const currentUser = async (req, res, next) => {
-  const user = req.user;
-
   const { id, name, email, avatarURL, birthDay, phone, messenger } = req.user;
 
   res
@@ -25,6 +23,7 @@ const logoutUser = async (req, res, next) => {
 const changeUser = async (req, res, next) => {
   const newUser = req.body;
   const currentUser = req.user;
+  console.log('newUser', newUser);
 
   if (newUser.email !== currentUser.email) {
     const userWithNewEmail = await updateEmail(currentUser.id, newUser);

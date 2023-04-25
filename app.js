@@ -28,15 +28,10 @@ mongoose
     process.exit(1);
   });
 
-//Swager start
-// app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
-//Swager end
-
 app.use(logger(formatsLogger));
 app.use(cors());
 app.use(express.json());
 app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
-
 //Routes
 app.use('/api/auth', authRouter);
 app.use('/api/user', userRouter);
