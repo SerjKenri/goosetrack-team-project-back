@@ -1,0 +1,16 @@
+# -----//  Scheme for protected Routs  //-----
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+# to protect rout, you should add "security: - bearerAuth: []"
+# Example:
+#   get:
+#     security:
+#       - bearerAuth: []
+#     summary: Retrieve user information.
+#     ...
+
+# -----//  Tasks docs  //-----
