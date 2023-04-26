@@ -1,5 +1,3 @@
-const sendEmail = require('../../service/mailService');
-
 const {
   createUser,
   verifyUser,
@@ -11,28 +9,18 @@ const { signToken } = require('../../service/JWTServices');
 const AppError = require('../../utils/appError');
 
 const postUser = async (req, res, next) => {
-  const newUser = await createUser(req.body);
+  const newUserToVerify = await createUser(req.body);
 
-  if (!newUser) {
+  if (!newUserToVerify) {
     return next(new AppError(409, 'Email in use'));
   }
 
-  newUser.password = undefined;
-
-  const { name, email, verificationToken } = newUser;
-
-  const verifyEmail = {
-    to: email,
-    subject: 'Test email',
-    html: `<strong>Please verify your email</strong> <a target="_blank" href="${process.env.DEV_URL}/api/auth/verify/${verificationToken}"> Click the link </a>`,
-  };
-
-  await sendEmail(verifyEmail);
+  const { name, email } = newUserToVerify;
 
   res.status(201).json({ user: { name, email } });
 };
 
-const getUserVerification = async (req, res) => {
+const getUserVerification = async (req, res, next) => {
   const { verificationToken } = req.params;
 
   const userHasVerifyToken = await verifyUser(verificationToken);
@@ -44,7 +32,7 @@ const getUserVerification = async (req, res) => {
   res.status(200).json({ message: 'Verification is successful' });
 };
 
-const postVerifiedUser = async (req, res) => {
+const postVerifiedUser = async (req, res, next) => {
   const { email } = req.body;
 
   const verifiedUser = await checkVerification({ email });
@@ -56,18 +44,10 @@ const postVerifiedUser = async (req, res) => {
     return next(new AppError(400, 'Verification has already been passed'));
   }
 
-  const verifyEmail = {
-    to: email,
-    subject: 'Test email',
-    html: `<strong>Please verify your email</strong> <a target="blank" href="${process.env.DEV_URL}/api/auth/verify/${verifiedUser.verificationToken}"> Click the link </a>`,
-  };
-
-  await sendEmail(verifyEmail);
-
   res.status(200).json({ message: 'Verification email sent' });
 };
 
-const postLoggedUser = async (req, res) => {
+const postLoggedUser = async (req, res, next) => {
   const { password } = req.body;
 
   const user = await logUser(req.body);
@@ -78,7 +58,9 @@ const postLoggedUser = async (req, res) => {
   }
 
   if (!user.verify) {
-    return next(new AppError(401, 'Email or password is wrong'));
+    return next(
+      new AppError(401, 'Email is not verified (Email or password is wrong)')
+    );
   }
 
   const passwordIsValid = await user.checkPassword(password, user.password);
