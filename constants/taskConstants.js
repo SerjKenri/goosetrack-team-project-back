@@ -4,10 +4,10 @@ const PRIORITY = {
   HIGHT: 'high',
 };
 
-const STATUS = {
+const CATEGORY = {
   TODO: 'toDo',
   PROGRESS: 'inProgress',
   DONE: 'done',
 };
 
-module.exports = { STATUS, PRIORITY };
+module.exports = { CATEGORY, PRIORITY };
