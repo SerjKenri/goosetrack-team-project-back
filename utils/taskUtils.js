@@ -34,24 +34,10 @@ const updateTaskById = async (_id, owner, body) => {
 
   return task;
 };
-const updateStatus = async (_id, owner, category) => {
-  // const task = await Task.findByIdAndUpdate(id, { ...body }, { new: true });
-  const task = await Task.findOneAndUpdate(
-    { _id, owner },
-    { category },
-    {
-      new: true,
-    }
-  );
-  if (!task) throw new NotFound('Task has not been found');
-
-  return task;
-};
 
 module.exports = {
   findTasks,
   removeTask,
   createTask,
   updateTaskById,
-  updateStatus,
 };

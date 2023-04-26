@@ -69,7 +69,7 @@ components:
                     type: string
                     description: Task priority.
                     example: 'high'
-                  status:
+                  category:
                     type: string
                     description: Task status.
                     example: 'inProgress'
@@ -115,7 +115,7 @@ components:
                 type: string
                 description: Task priority.
                 example: 'high'
-              status:
+              category:
                 type: string
                 description: Task status.
                 example: 'inProgress'
@@ -150,7 +150,7 @@ components:
                   type: string
                   description: Task priority.
                   example: 'high'
-                status:
+                category:
                   type: string
                   description: Task status.
                   example: 'inProgress'
@@ -161,7 +161,7 @@ components:
 
 # edit task
 /api/tasks/{taskId}:
-  put:
+  patch:
     security:
       - bearerAuth: []
     summary: Update the task.
@@ -202,70 +202,6 @@ components:
                 type: string
                 description: Task priority.
                 example: 'high'
-    responses:
-      201:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                _id:
-                  type: string
-                  description: Task ID.
-                  example: '644629afdb51c35fa8f0c9af'
-                title:
-                  type: string
-                  description: Task title.
-                  example: 'to complete team project'
-                start:
-                  type: string
-                  description: Task start time.
-                  example: '11:00'
-                end:
-                  type: string
-                  description: Task end time.
-                  example: '14:00'
-                date:
-                  type: string
-                  description: The date of task implementation.
-                  example: '2023-05-03'
-                priority:
-                  type: string
-                  description: Task priority.
-                  example: 'high'
-                status:
-                  type: string
-                  description: Task status.
-                  example: 'inProgress'
-      400:
-        description: Bad request
-      401:
-        description: Bearer authorization failed
-      404:
-        description: Task not found
-
-  # patch task
-  patch:
-    security:
-      - bearerAuth: []
-    summary: Update the task's category.
-    tags:
-      - Tasks
-    description: Update the task's category.
-    parameters:
-      - in: path
-        name: taskId
-        type: string
-        description: Task Id.
-        example: '6444e788e0ba520cae441053'
-        required: true
-    requestBody:
-      description: A JSON object containing task update information
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
               category:
                 type: string
                 description: Task status.
@@ -301,7 +237,7 @@ components:
                   type: string
                   description: Task priority.
                   example: 'high'
-                status:
+                category:
                   type: string
                   description: Task status.
                   example: 'inProgress'

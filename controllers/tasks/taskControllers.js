@@ -3,7 +3,6 @@ const {
   removeTask,
   createTask,
   updateTaskById,
-  updateStatus,
 } = require('../../utils/taskUtils');
 
 const getTasks = async (req, res) => {
@@ -36,19 +35,9 @@ const updateTask = async (req, res) => {
   res.status(200).json(result);
 };
 
-const updateCategoryTask = async (req, res) => {
-  const { id } = req.params;
-  const { _id } = req.user;
-
-  const result = await updateStatus(id, _id, req.body.category);
-
-  res.status(200).json(result);
-};
-
 module.exports = {
   getTasks,
   addTask,
   deleteTask,
   updateTask,
-  updateCategoryTask,
 };
