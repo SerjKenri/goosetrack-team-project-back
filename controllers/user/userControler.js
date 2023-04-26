@@ -1,3 +1,4 @@
+const { ImageService } = require('../../service/imageService');
 const {
   updateUserFn,
   logoutUserFn,
@@ -21,9 +22,11 @@ const logoutUser = async (req, res, next) => {
 };
 
 const changeUser = async (req, res, next) => {
+  const avatarFile = req.file;
   const newUser = req.body;
   const currentUser = req.user;
   console.log('newUser', newUser);
+  console.log('currentUser', currentUser);
 
   if (newUser.email !== currentUser.email) {
     const userWithNewEmail = await updateEmail(currentUser.id, newUser);
@@ -42,13 +45,28 @@ const changeUser = async (req, res, next) => {
   if (newUser.avatarURL !== currentUser.avatarURL) {
     console.log('-----------To Do: Send avatar to cloud--------------');
   }
+  if (avatarFile) {
+    console.log('-----------Send avatar to cloud--------------');
 
-  const updateUser = await updateUserFn(currentUser.id, newUser);
+    currentUser.avatarURL = await ImageService.save(
+      avatarFile,
+      250,
+      250,
+      'avatars'
+    );
+    console.log('currentUser.avatarURL', currentUser.avatarURL);
+  }
+  // const updatedUser = await currentUser.save({ validateBeforeSave: false });
+  // res.status(200).json({ avatarURL: updatedUser.avatarURL });
+  /////////////////////////////////////////////////
 
-  if (!updateUser)
+  const updateUser1111111 = await updateUserFn(currentUser.id, newUser);
+
+  if (!updateUser1111111)
     return res.status(400).json({ message: 'The request cannot be completed' });
 
-  const { id, name, email, avatarURL, birthDay, phone, messenger } = updateUser;
+  const { id, name, email, avatarURL, birthDay, phone, messenger } =
+    updateUser1111111;
 
   res
     .status(200)
