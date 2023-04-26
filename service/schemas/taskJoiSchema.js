@@ -1,24 +1,24 @@
-const Joi = require('joi');
+const Joi = require('joi').extend(require('@joi/date'));
 
-const { PRIORITY, STATUS } = require('../../constants/taskConstants');
+const { PRIORITY, CATEGORY } = require('../../constants/taskConstants');
 
-const TIME_REGEX = /^([0-9]{2})\:([0-9]{2})$/;
+const TIME_REGEX = /^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/;
 
 const taskJoiSchema = Joi.object({
   title: Joi.string().max(250).required(),
   start: Joi.string().regex(TIME_REGEX).required(),
   end: Joi.string().regex(TIME_REGEX).required(),
-  year: Joi.string().max(4).regex(/[0-9]/).required(),
-  month: Joi.string()
-    .max(2)
-    .regex(/^([0-1]{1})([0-9]{1})$/)
+  date: Joi.date().format('YYYY-MM-DD').required(),
+  priority: Joi.string()
+    .valid(...Object.values(PRIORITY)) // ["low","medium","high"]
     .required(),
-  day: Joi.string()
-    .max(2)
-    .regex(/^([0-3]{1})([0-9]{1})$/)
-    .required(),
-  status: Joi.string().valid(...Object.values(STATUS)), // ["low","medium","high"]
-  priority: Joi.string().valid(...Object.values(PRIORITY)), // ["toDo","inProgress","done"]
+  category: Joi.string().valid(...Object.values(CATEGORY)), // ["toDo","inProgress","done"]
+});
+
+const taskJoiStatusSchema = Joi.object({
+  category: Joi.string()
+    .valid(...Object.values(CATEGORY))
+    .required(), // ["toDo","inProgress","done"]
 });
 
 module.exports = taskJoiSchema;

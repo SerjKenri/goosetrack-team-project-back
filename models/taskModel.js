@@ -1,6 +1,6 @@
 const { Schema, model } = require('mongoose');
 
-const { PRIORITY, STATUS } = require('../constants/taskConstants');
+const { PRIORITY, CATEGORY } = require('../constants/taskConstants');
 
 const taskSchema = Schema(
   {
@@ -10,23 +10,15 @@ const taskSchema = Schema(
     },
     start: {
       type: String,
-      required: true,
+      required: [true, 'add start time'],
     },
     end: {
       type: String,
-      required: true,
+      required: [true, 'add end time'],
     },
-    year: {
+    date: {
       type: String,
-      required: true,
-    },
-    month: {
-      type: String,
-      required: true,
-    },
-    day: {
-      type: String,
-      required: true,
+      required: [true, 'set date'],
     },
     owner: {
       type: Schema.Types.ObjectId,
@@ -36,11 +28,13 @@ const taskSchema = Schema(
       type: String,
       enum: Object.values(PRIORITY), // ["low","medium","high"]
       default: PRIORITY.LOW,
+      required: true,
     },
-    status: {
+    category: {
       type: String,
-      enum: Object.values(STATUS), // ["toDo","inProgress","done"]
-      default: STATUS.TODO,
+      enum: Object.values(CATEGORY), // ["toDo","inProgress","done"]
+      default: CATEGORY.TODO,
+      required: true,
     },
   },
   { versionKey: false }
