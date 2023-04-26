@@ -61,18 +61,10 @@ components:
                     type: string
                     description: Task end time.
                     example: '14:00'
-                  year:
+                  date:
                     type: string
-                    description: The year of task implementation.
-                    example: '2023'
-                  month:
-                    type: string
-                    description: The month of task implementation.
-                    example: '05'
-                  day:
-                    type: string
-                    description: The day of task implementation.
-                    example: '03'
+                    description: The date of task implementation.
+                    example: '2023-05-03'
                   priority:
                     type: string
                     description: Task priority.
@@ -115,18 +107,10 @@ components:
                 type: string
                 description: Task end time.
                 example: '14:00'
-              year:
+              date:
                 type: string
-                description: The year of task implementation.
-                example: '2023'
-              month:
-                type: string
-                description: The month of task implementation.
-                example: '05'
-              day:
-                type: string
-                description: The day of task implementation.
-                example: '03'
+                description: The date of task implementation.
+                example: '2023-05-03'
               priority:
                 type: string
                 description: Task priority.
@@ -158,18 +142,10 @@ components:
                   type: string
                   description: Task end time.
                   example: '14:00'
-                year:
+                date:
                   type: string
-                  description: The year of task implementation.
-                  example: '2023'
-                month:
-                  type: string
-                  description: The month of task implementation.
-                  example: '05'
-                day:
-                  type: string
-                  description: The day of task implementation.
-                  example: '03'
+                  description: The date of task implementation.
+                  example: '2023-05-03'
                 priority:
                   type: string
                   description: Task priority.
@@ -218,18 +194,10 @@ components:
                 type: string
                 description: Task end time.
                 example: '14:00'
-              year:
+              date:
                 type: string
-                description: The year of task implementation.
-                example: '2023'
-              month:
-                type: string
-                description: The month of task implementation.
-                example: '05'
-              day:
-                type: string
-                description: The day of task implementation.
-                example: '03'
+                description: The date of task implementation.
+                example: '2023-05-03'
               priority:
                 type: string
                 description: Task priority.
@@ -257,18 +225,10 @@ components:
                   type: string
                   description: Task end time.
                   example: '14:00'
-                year:
+                date:
                   type: string
-                  description: The year of task implementation.
-                  example: '2023'
-                month:
-                  type: string
-                  description: The month of task implementation.
-                  example: '05'
-                day:
-                  type: string
-                  description: The day of task implementation.
-                  example: '03'
+                  description: The date of task implementation.
+                  example: '2023-05-03'
                 priority:
                   type: string
                   description: Task priority.
@@ -333,18 +293,10 @@ components:
                   type: string
                   description: Task end time.
                   example: '14:00'
-                year:
+                date:
                   type: string
-                  description: The year of task implementation.
-                  example: '2023'
-                month:
-                  type: string
-                  description: The month of task implementation.
-                  example: '05'
-                day:
-                  type: string
-                  description: The day of task implementation.
-                  example: '03'
+                  description: The date of task implementation.
+                  example: '2023-05-03'
                 priority:
                   type: string
                   description: Task priority.
