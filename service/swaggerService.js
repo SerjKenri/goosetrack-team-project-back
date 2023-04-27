@@ -16,20 +16,20 @@ const swaggerSetups = () => {
         url: 'https://serjkenri.github.io/goosetrack-team-project-front/',
       },
     },
-    components: {
-      securitySchemes: {
-        bearerAuth: {
-          type: 'http',
-          scheme: 'bearer',
-          bearerFormat: 'JWT',
-        },
-      },
-    },
-    security: [
-      {
-        bearerAuth: [],
-      },
-    ],
+    // components: {
+    //   securitySchemes: {
+    //     bearerAuth: {
+    //       type: 'http',
+    //       scheme: 'bearer',
+    //       bearerFormat: 'JWT',
+    //     },
+    //   },
+    // },
+    // security: [
+    //   {
+    //     bearerAuth: [],
+    //   },
+    // ],
     servers: [
       {
         url: process.env.DEV_URL,
