@@ -3,6 +3,7 @@ const {
   updateUserFn,
   logoutUserFn,
   updateEmail,
+  updateUserwithAvatar,
 } = require('../../utils/userUtils');
 
 const currentUser = async (req, res, next) => {
@@ -22,51 +23,77 @@ const logoutUser = async (req, res, next) => {
 };
 
 const changeUser = async (req, res, next) => {
-  const avatarFile = req.file;
   const newUser = req.body;
   const currentUser = req.user;
-  console.log('newUser', newUser);
-  console.log('currentUser', currentUser);
 
+  //-------if update email-------//
   if (newUser.email !== currentUser.email) {
+    //   // new email and Avatar
+    //   if (req.file) {
+    //     const userWithNewEmail = await updateEmailAndAvatar(currentUser.id, newUser);
+    //     if (!userWithNewEmail)
+    //       return res
+    //         .status(400)
+    //         .json({ message: 'The request cannot be completed' });
+
+    //     const { id, name, email, avatarURL, birthDay, phone, messenger } =
+    //       userWithNewEmail;
+    //     return res.status(200).json({
+    //       id,
+    //       name,
+    //       email,
+    //       avatarURL,
+    //       birthDay,
+    //       phone,
+    //       messenger,
+    //     });
+    //   }
+
+    // if (!req.file) {
     const userWithNewEmail = await updateEmail(currentUser.id, newUser);
-    if (!userWithNewEmail)
+    if (!userWithNewEmail) {
       return res
         .status(400)
         .json({ message: 'The request cannot be completed' });
+    }
 
     const { id, name, email, avatarURL, birthDay, phone, messenger } =
       userWithNewEmail;
     return res
       .status(200)
       .json({ id, name, email, avatarURL, birthDay, phone, messenger });
+    // }
   }
 
-  if (newUser.avatarURL !== currentUser.avatarURL) {
-    console.log('-----------To Do: Send avatar to cloud--------------');
-  }
-  if (avatarFile) {
-    console.log('-----------Send avatar to cloud--------------');
-
-    currentUser.avatarURL = await ImageService.save(
-      avatarFile,
-      250,
-      250,
-      'avatars'
+  //-------if avatar-------//
+  if (req.file) {
+    const userWithAvatar = await updateUserwithAvatar(
+      currentUser.id,
+      newUser,
+      req.file.path
     );
-    console.log('currentUser.avatarURL', currentUser.avatarURL);
+
+    if (!userWithAvatar) {
+      return res
+        .status(400)
+        .json({ message: 'The request cannot be completed' });
+    }
+
+    const { id, name, email, avatarURL, birthDay, phone, messenger } =
+      userWithAvatar;
+    return res
+      .status(200)
+      .json({ id, name, email, avatarURL, birthDay, phone, messenger });
   }
-  // const updatedUser = await currentUser.save({ validateBeforeSave: false });
-  // res.status(200).json({ avatarURL: updatedUser.avatarURL });
-  /////////////////////////////////////////////////
 
-  const updateUser1111111 = await updateUserFn(currentUser.id, newUser);
+  //-------if no avatar-------//
 
-  if (!updateUser1111111)
+  const updateUser = await updateUserFn(currentUser.id, newUser);
+
+  if (!updateUser)
     return res.status(400).json({ message: 'The request cannot be completed' });
 
-  const { id, name, email, avatarURL, birthDay, phone, messenger } =
-    updateUser1111111;
+  const { id, name, email, avatarURL, birthDay, phone, messenger } = updateUser;
 
   res
     .status(200)

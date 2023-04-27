@@ -10,6 +10,7 @@ const {
 } = require('../../middlewares/userValidation');
 const protectedRout = require('../../middlewares/authMiddleware');
 const { uploadUserAvatar } = require('../../middlewares/userFormDataUpdate');
+const uploadCloud = require('../../middlewares/uploadFileMiddleware');
 const userRouter = express.Router();
 
 // //
@@ -30,7 +31,8 @@ userRouter.get('/current', ctrlWrapper(currentUser));
 userRouter.post('/logout', ctrlWrapper(logoutUser));
 userRouter.patch(
   '/info',
-  uploadUserAvatar,
+  uploadCloud.single('avatarURL'),
+  // uploadUserAvatar,
   patchUpdateUserValidation,
   ctrlWrapper(changeUser)
 );
