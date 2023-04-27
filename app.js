@@ -10,7 +10,7 @@ require('dotenv').config({ path: './.env' });
 
 const path = require('path');
 
-swagger setup start
+// swagger setup start
 
 const swaggerUi = require('swagger-ui-express');
 const swaggerSpec = swaggerSetups();
