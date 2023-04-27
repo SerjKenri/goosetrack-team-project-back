@@ -1,5 +1,6 @@
 const { v4: uuidv4 } = require('uuid');
 const User = require('../models/userModel');
+const Email = require('../service/mailService');
 
 const createUser = async body => {
   try {
@@ -8,7 +9,23 @@ const createUser = async body => {
 
     const emailAlreadyExist = await User.findOne({ email });
 
-    return await User.create({ ...body, verificationToken: verificationCode });
+    if (emailAlreadyExist) {
+      return;
+    }
+
+    const newUser = await User.create({
+      ...body,
+      verificationToken: verificationCode,
+    });
+
+    newUser.password = undefined;
+
+    await new Email(
+      newUser,
+      `${process.env.DEV_URL}/api/auth/verify/${newUser.verificationToken}`
+    ).sendVerification();
+
+    return newUser;
   } catch (error) {
     console.log(error.message);
   }
@@ -33,6 +50,15 @@ const checkVerification = async body => {
     const { email } = body;
 
     const userWithTokenExist = await User.findOne({ email });
+
+    if (!userWithTokenExist) {
+      return;
+    }
+
+    await new Email(
+      userWithTokenExist,
+      `${process.env.DEV_URL}/api/auth/verify/${userWithTokenExist.verificationToken}`
+    ).sendVerification();
 
     return userWithTokenExist;
   } catch (error) {
