@@ -21,7 +21,25 @@ const updateUserFn = async (userId, newUser) => {
     const updateUser = await User.findByIdAndUpdate(userId, newUser, {
       new: true,
     });
+    return updateUser;
+  } catch (error) {
+    console.log(error);
+  }
+};
 
+const updateUserwithAvatar = async (userId, newUser, filePath) => {
+  try {
+    const updatedUserWithAvatar = {
+      ...newUser,
+      avatarURL: filePath,
+    };
+    const updateUser = await User.findByIdAndUpdate(
+      userId,
+      updatedUserWithAvatar,
+      {
+        new: true,
+      }
+    );
     return updateUser;
   } catch (error) {
     console.log(error);
@@ -66,5 +84,6 @@ const updateEmail = async (userId, newUser) => {
 module.exports = {
   logoutUserFn,
   updateUserFn,
+  updateUserwithAvatar,
   updateEmail,
 };

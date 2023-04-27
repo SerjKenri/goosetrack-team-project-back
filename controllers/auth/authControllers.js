@@ -44,7 +44,7 @@ const getUserVerification = async (req, res) => {
   res.status(200).json({ message: 'Verification is successful' });
 };
 
-const postVerifiedUser = async (req, res) => {
+const postVerifiedUser = async (req, res, next) => {
   const { email } = req.body;
 
   const verifiedUser = await checkVerification({ email });
@@ -67,7 +67,7 @@ const postVerifiedUser = async (req, res) => {
   res.status(200).json({ message: 'Verification email sent' });
 };
 
-const postLoggedUser = async (req, res) => {
+const postLoggedUser = async (req, res, next) => {
   const { password } = req.body;
 
   const user = await logUser(req.body);
