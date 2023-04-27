@@ -5,6 +5,7 @@ const mongoose = require('mongoose');
 const authRouter = require('./routes/api/authRoutes');
 const tasksRouter = require('./routes/api/tasksRoutes');
 const userRouter = require('./routes/api/userRoutes');
+const columnsRouter = require('./routes/api/columnRoutes');
 const { swaggerSetups } = require('./service/swaggerService');
 require('dotenv').config({ path: './.env' });
 
@@ -41,7 +42,8 @@ app.use('/api/auth', authRouter);
 app.use('/api/user', userRouter);
 
 app.use('/api/tasks', tasksRouter);
-// app.use("/api/columns", columnsRouter);
+
+app.use('/api/columns', columnsRouter);
 
 app.use((req, res) => {
   res.status(404).json({ message: 'Page not found' });
