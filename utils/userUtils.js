@@ -1,6 +1,6 @@
 const User = require('../models/userModel');
 const { v4: uuidv4 } = require('uuid');
-const sendEmail = require('../service/mailService');
+const Email = require('../service/mailService');
 
 const logoutUserFn = async userId => {
   try {
@@ -16,9 +16,15 @@ const logoutUserFn = async userId => {
   }
 };
 
-const updateUserFn = async (userId, newUser) => {
+// --------Update user without avatarFile----------
+const updateUserFn = async (currentUser, newUser) => {
   try {
-    const updateUser = await User.findByIdAndUpdate(userId, newUser, {
+    if (newUser.email !== currentUser.email) {
+      const userWithNewEmail = await updateEmail(currentUser.id, newUser);
+      return userWithNewEmail;
+    }
+
+    const updateUser = await User.findByIdAndUpdate(currentUser.id, newUser, {
       new: true,
     });
     return updateUser;
@@ -27,14 +33,24 @@ const updateUserFn = async (userId, newUser) => {
   }
 };
 
-const updateUserwithAvatar = async (userId, newUser, filePath) => {
+// --------Update user wit avatarFile----------
+const updateUserwithAvatar = async (currentUser, newUser, filePath) => {
   try {
     const updatedUserWithAvatar = {
       ...newUser,
       avatarURL: filePath,
     };
+
+    if (newUser.email !== currentUser.email) {
+      const userWithNewEmail = await updateEmail(
+        currentUser.id,
+        updatedUserWithAvatar
+      );
+      return userWithNewEmail;
+    }
+
     const updateUser = await User.findByIdAndUpdate(
-      userId,
+      currentUser.id,
       updatedUserWithAvatar,
       {
         new: true,
@@ -64,17 +80,12 @@ const updateEmail = async (userId, newUser) => {
       }
     );
 
-    const newVerifyEmail = {
-      to: newUser.email,
-      subject: 'Test email',
-      html: `<strong>Please verify your email</strong> <a target="_blank" href="${process.env.DEV_URL}/api/auth/verify/${verificationCode}"> Click the link </a>`,
-    };
+    await new Email(
+      updateUserMail,
+      `${process.env.DEV_URL}/api/auth/verify/${verificationCode}`
+    ).sendVerification();
 
-    await sendEmail(newVerifyEmail);
-    await logoutUserFn(userId);
-
-    console.log('updateUserMail is with token', updateUserMail);
-
+    logoutUserFn(updateUserMail.id);
     return updateUserMail;
   } catch (error) {
     console.log(error);
