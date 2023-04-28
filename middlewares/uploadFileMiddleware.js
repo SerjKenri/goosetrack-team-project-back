@@ -12,37 +12,21 @@ cloudinary.config({
 
 const storage = new CloudinaryStorage({
   cloudinary: cloudinary,
-  // params: {
-  //   folder: 'avatars',
-  //   format: async (req, file) => ['jpg', 'png'],
-  //   filename: (req, file, cb) => {
-  //     console.log('eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee');
-  //     console.log('req!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!', file);
-  //     cb(null, file.originalname);
-  //   },
-  //   //
-  // },
+
   params: async (req, file) => {
     if (!file.mimetype.startsWith('image')) {
       throw new BadRequest('Only image is alowed to be downloaded!');
     }
 
     return {
+      width: 350,
+      height: 350,
+      quality: 60,
       folder: 'avatars',
       format: 'jpg',
       public_id: uuid(),
     };
-    //
   },
-
-  // cloudinary: cloudinary,
-  // folder: 'avatars',
-  // allowedFormats: ['jpg', 'png'],
-  // fileName: (req, file, cb) => {
-  //   console.log('eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee');
-  //   console.log('req!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!', file);
-  //   cb(null, file.originalname);
-  // },
 });
 
 const uploadCloud = multer({ storage });
