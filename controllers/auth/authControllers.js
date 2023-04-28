@@ -44,7 +44,9 @@ const postVerifiedUser = async (req, res, next) => {
     return next(new AppError(400, 'Verification has already been passed'));
   }
 
-  res.status(200).json({ message: 'Verification email sent' });
+  // res.status(200).json({ message: 'Verification email sent' });
+
+  res.status(200).json({ message: 'Verification is successful' });
 };
 
 const postLoggedUser = async (req, res, next) => {
@@ -53,8 +55,7 @@ const postLoggedUser = async (req, res, next) => {
   const user = await logUser(req.body);
 
   if (!user) {
-    return res.status(401).json({ message: 'Email or password is wrong' });
-    // return next(new AppError(401, 'Email or password is wrong'));
+    return next(new AppError(401, 'Email or password is wrong'));
   }
 
   if (!user.verify) {

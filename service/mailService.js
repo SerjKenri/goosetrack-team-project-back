@@ -51,6 +51,13 @@ class Email {
   async sendVerification() {
     await this._send('verifyEmail', 'Verification email from Goosetrack');
   }
+
+  async sendPasswordRestore() {
+    await this._send(
+      'passwordRestore',
+      'Password restore instructions from Goosetrack.'
+    );
+  }
 }
 
 module.exports = Email;
