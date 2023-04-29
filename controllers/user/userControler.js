@@ -100,8 +100,13 @@ const changeUser = async (req, res, next) => {
     .json({ id, name, email, avatarURL, birthDay, phone, messenger });
 };
 
+const updateMyPassword = (req, res) => {
+  res.status(200).json({ user: req.user });
+};
+
 module.exports = {
   currentUser,
   logoutUser,
   changeUser,
+  updateMyPassword,
 };
