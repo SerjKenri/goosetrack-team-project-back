@@ -22,8 +22,8 @@ const createUser = async body => {
 
     await new Email(
       newUser,
-      // `${process.env.DEV_URL}/api/auth/verify/${newUser.verificationToken}`
-      `${process.env.DEV_URL}/goosetrack-team-project-front/verify/${newUser.verificationToken}`
+      `${process.env.DEV_URL}/api/auth/verify/${newUser.verificationToken}`
+      // `${process.env.DEV_URL}/goosetrack-team-project-front/verify/${newUser.verificationToken}`
     ).sendVerification();
 
     return newUser;
