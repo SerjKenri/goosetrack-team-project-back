@@ -59,6 +59,7 @@ const checkVerification = async body => {
     await new Email(
       userWithTokenExist,
       `${process.env.DEV_URL}/api/auth/verify/${userWithTokenExist.verificationToken}`
+      // `${process.env.DEV_URL}/goosetrack-team-project-front/verify/${userWithTokenExist.verificationToken}`
     ).sendVerification();
 
     return userWithTokenExist;

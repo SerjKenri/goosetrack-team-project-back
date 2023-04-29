@@ -24,6 +24,26 @@ const patchUpdateUserValidation = (req, res, next) => {
   next();
 };
 
+const userUpdatePassValidation = (req, res, next) => {
+  const schema = Joi.object({
+    currentPassword: Joi.string().regex(PASSWD_REGEX).required(),
+    newPassword: Joi.string().regex(PASSWD_REGEX).required(),
+  });
+
+  const validationResult = schema.validate(req.body);
+
+  if (validationResult.error) {
+    const validationError = validationResult.error.details[0].context.key;
+
+    return res
+      .status(400)
+      .json({ message: `${validationError} field doesn't match the pattern` });
+  }
+
+  next();
+};
+
 module.exports = {
   patchUpdateUserValidation,
+  userUpdatePassValidation,
 };
