@@ -22,6 +22,8 @@ tasksRouter.post('/', validation(taskSchema), ctrlWrapper(addTask));
 
 tasksRouter.patch('/:id', validation(taskSchema), ctrlWrapper(updateTask));
 
+tasksRouter.patch('/:id', validation(taskSchema), ctrlWrapper(updateTask));
+
 tasksRouter.delete('/:id', ctrlWrapper(deleteTask));
 
 module.exports = tasksRouter;

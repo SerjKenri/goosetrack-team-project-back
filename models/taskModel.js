@@ -27,6 +27,11 @@ const taskSchema = Schema(
     owner: {
       type: Schema.Types.ObjectId,
       ref: 'column',
+      required: true,
+    },
+    userOwner: {
+      type: Schema.Types.ObjectId,
+      required: true,
     },
     priority: {
       type: String,
