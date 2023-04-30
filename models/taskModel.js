@@ -20,9 +20,13 @@ const taskSchema = Schema(
       type: String,
       required: [true, 'set date'],
     },
+    position: {
+      type: Number,
+      required: true,
+    },
     owner: {
       type: Schema.Types.ObjectId,
-      ref: 'user',
+      ref: 'column',
     },
     priority: {
       type: String,
@@ -36,10 +40,6 @@ const taskSchema = Schema(
       default: CATEGORY.TODO,
       required: true,
     },
-    // columnId: {
-    //   type: Schema.Types.ObjectId,
-    //   ref: 'column',
-    // },
   },
   { versionKey: false }
 );

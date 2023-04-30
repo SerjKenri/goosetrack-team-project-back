@@ -7,6 +7,8 @@ const {
 } = require('../../utils/authUtils');
 const { signToken } = require('../../service/JWTServices');
 const AppError = require('../../utils/appError');
+const Column = require('../../models/columnModel');
+
 
 const postUser = async (req, res, next) => {
   const newUserToVerify = await createUser(req.body);
@@ -15,7 +17,15 @@ const postUser = async (req, res, next) => {
     return next(new AppError(409, 'Email in use'));
   }
 
-  const { name, email } = newUserToVerify;
+  const { name, email, _id } = newUserToVerify;
+
+  const todoColumn = { columnName: "To do", position: 1, owner: _id }
+  const inprogressColumn = {columnName: "In progress", position: 2, owner: _id}
+  const doneColumn = {columnName: "Done", position: 3, owner: _id}
+
+  await Column.create(todoColumn);
+  await Column.create(inprogressColumn);
+  await Column.create(doneColumn);
 
   res.status(201).json({ user: { name, email } });
 };
