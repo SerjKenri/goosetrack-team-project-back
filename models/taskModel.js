@@ -20,9 +20,18 @@ const taskSchema = Schema(
       type: String,
       required: [true, 'set date'],
     },
+    position: {
+      type: Number,
+      required: true,
+    },
     owner: {
       type: Schema.Types.ObjectId,
-      ref: 'user',
+      ref: 'column',
+      required: true,
+    },
+    userOwner: {
+      type: Schema.Types.ObjectId,
+      required: true,
     },
     priority: {
       type: String,

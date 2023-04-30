@@ -1,4 +1,4 @@
-const { mongoose, Schema } = require('mongoose');
+const { model, Schema } = require('mongoose');
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
 const crypto = require('crypto');
@@ -73,6 +73,6 @@ userSchema.methods.createPasswordResetToken = function () {
   return resetToken;
 };
 
-const User = mongoose.model('user', userSchema);
+const User = model('user', userSchema);
 
 module.exports = User;

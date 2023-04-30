@@ -4,30 +4,45 @@ const Task = require('../../models/taskModel');
 const getColumns = async (req, res) => {
   const { _id } = req.user;
 
-  // const tasks = await Task.find({
-  //   owner: _id,
-  // });
-  // req.body.tasks = tasks;
   const columns = await Column.find({ owner: _id });
 
   res.status(200).json(columns);
 };
 
 const addColumn = async (req, res) => {
-  const { _id } = req.user;
+  // const { _id, name } = req.body;
 
-  const columns = await Column.find({ owner: _id });
 
-  req.body.owner = _id;
-  req.body.position = columns.length + 1;
+  const columns = await Column.find({ owner: req.user._id })
+  const newColumn = {...req.body, position: columns.length + 1}
+  // req.body.newColumn = newColumn
 
-  const column = await Column.create(req.body);
+  // const columns = await Column.create({ owner: _id });
+
+  // req.body.owner = _id;
+  // req.body.position = columns.length + 1;
+  const column = await Column.create(newColumn);
   res.status(201).json(column);
 };
 
 const deleteColumn = async (req, res) => {
-  const { id } = req.params;
-  const { _id } = req.user;
+  // const { id } = req.params;
+  // const { _id } = req.user;
+
+  const { _id, position, owner } = await Column.findById(req.params.id);
+  await Column.bulkWrite([
+    {
+      deleteOne: {
+        filter: { _id },
+      },
+    },
+    {
+      updateMany: {
+        filter: { position: { $gt: position }, owner },
+        update: { $inc: { position: -1 } },
+      },
+    },
+  ]);
 
   // const columns = await Column.find({ owner: _id });
   // positions = columns.map(column => column.position);
@@ -36,25 +51,33 @@ const deleteColumn = async (req, res) => {
   // const column = await Column.findOne({ _id: id, owner: _id });
   // console.log(column.position);
 
-  await Column.findOneAndDelete({ _id: id, owner: _id });
+  // await Column.findOneAndDelete({ _id: id, owner: _id });
 
   res.status(204).json();
 };
 
 const updateColumn = async (req, res) => {
-  const { id } = req.params;
-  const { _id } = req.user;
-  const body = req.body;
-  console.log(body);
-  const column = await Column.findOneAndUpdate(
-    { _id: id, owner: _id },
-    { ...body },
-    {
-      new: true,
-    }
-  );
+
+  const column = await Column.findByIdAndUpdate(req.params.id, req.body,  { new: true });
 
   res.status(200).json(column);
+};
+
+const replaceColumn = async (req, res) => {
+
+    const {type, _id, owner, position} = req.body
+
+    let positionToReplace
+
+    if (type === 'up') positionToReplace = position - 1
+
+    if (type === 'down') positionToReplace = position + 1
+
+    
+    await Column.findOneAndUpdate({ owner, position: positionToReplace }, { position })
+    await Column.findByIdAndUpdate(_id, { position: positionToReplace })
+   
+    res.status(200).json({message: "Replaced"})
 };
 
 module.exports = {
@@ -62,4 +85,5 @@ module.exports = {
   addColumn,
   deleteColumn,
   updateColumn,
+  replaceColumn
 };
