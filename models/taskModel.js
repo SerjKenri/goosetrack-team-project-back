@@ -36,6 +36,10 @@ const taskSchema = Schema(
       default: CATEGORY.TODO,
       required: true,
     },
+    // columnId: {
+    //   type: Schema.Types.ObjectId,
+    //   ref: 'column',
+    // },
   },
   { versionKey: false }
 );
