@@ -11,6 +11,7 @@ const {
   addColumn,
   deleteColumn,
   updateColumn,
+  replaceColumn
 } = require('../../controllers/column/columnControllers');
 
 columnRouter.use(protectedRout);
@@ -19,8 +20,11 @@ columnRouter.get('/', ctrlWrapper(getColumns));
 
 columnRouter.post('/', ctrlWrapper(addColumn));
 
+columnRouter.delete('/:id', ctrlWrapper(deleteColumn));
+
 columnRouter.patch('/:id', ctrlWrapper(updateColumn));
 
-columnRouter.delete('/:id', ctrlWrapper(deleteColumn));
+columnRouter.patch('/:id', ctrlWrapper(replaceColumn));
+
 
 module.exports = columnRouter;

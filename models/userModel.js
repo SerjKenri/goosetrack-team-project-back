@@ -1,4 +1,4 @@
-const { mongoose, Schema } = require('mongoose');
+const { model, Schema } = require('mongoose');
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
 const crypto = require('crypto');
@@ -54,6 +54,6 @@ userSchema.pre('save', async function (next) {
 userSchema.methods.checkPassword = (candidate, hashedPass) =>
   bcrypt.compare(candidate, hashedPass);
 
-const User = mongoose.model('user', userSchema);
+const User = model('user', userSchema);
 
 module.exports = User;

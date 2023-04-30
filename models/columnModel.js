@@ -16,10 +16,6 @@ const columnSchema = Schema(
       type: Schema.Types.ObjectId,
       ref: 'user',
     },
-    tasks: {
-      type: Array,
-      required: true,
-    },
   },
   { versionKey: false }
 );

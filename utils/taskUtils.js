@@ -21,21 +21,20 @@ const findTasks = async (owner, year, month) => {
   return tasks;
 };
 
-const removeTask = async (_id, owner) => {
+const removeTask = async (_id) => {
   // const task = await Task.findByIdAndRemove(id);
-  const task = await Task.findOneAndDelete({ _id, owner });
+  const task = await Task.findByIdAndDelete(_id);
 
   if (!task) throw new NotFound('Task has not been found');
 
   return task;
 };
 
-const updateTaskById = async (_id, owner, body) => {
-  // const task = await Task.findByIdAndUpdate(id, { ...body }, { new: true });
-  const task = await Task.findOneAndUpdate({ _id, owner }, body, {
-    new: true,
-  }).select('-owner');
-  if (!task) throw new NotFound('Task has not been found');
+const updateTaskById = async (_id, body) => {
+  const task = await Task.findByIdAndUpdate(id, { ...body }, { new: true });
+  // const task = await Task.findOneAndUpdate({ _id, owner }, body, {
+  //   new: true,
+  // }).select('-owner');
 
   return task;
 };
