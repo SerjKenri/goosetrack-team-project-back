@@ -1,4 +1,3 @@
-const Column = require('../../models/columnModel');
 const Task = require('../../models/taskModel');
 const {
   findTasks,
@@ -8,7 +7,7 @@ const {
 } = require('../../utils/taskUtils');
 
 const getTasks = async (req, res) => {
-  const { _id } = req.body;
+  const { _id } = req.user;
   const { year, month } = req.query;
   const tasks = await findTasks(_id, year, month);
 
@@ -17,13 +16,15 @@ const getTasks = async (req, res) => {
 
 const addTask = async (req, res) => {
   
-  const task = await Task.create(req.body);
+  const tasks = await Task.find({ owner: req.body.owner })
+  const newtask = { ...req.body, position: tasks.length + 1 }
+  
+  const task = await Task.create(newtask);
 
   return res.status(201).json(task);
 };
 
 const deleteTask = async (req, res) => {
-  // const { _id } = req.user;
 
   const { _id, position, owner } = await Task.findById(req.params.id);
   
@@ -53,19 +54,25 @@ const updateTask = async (req, res) => {
 
 const replaceTask = async (req, res) => {
 
-    const {type, _id, owner, position} = req.body
+  const { topTask, bottomTask } = req.body
 
-    let positionToReplace
-
-    if (type === 'up') positionToReplace = position - 1
-
-    if (type === 'down') positionToReplace = position + 1
-
-    
-    await Task.findOneAndUpdate({ owner, position: positionToReplace }, { position })
-    await Task.findByIdAndUpdate(_id, { position: positionToReplace })
+  await Task.findByIdAndUpdate(topTask.id, { position: bottomTask.position })
+  await Task.findByIdAndUpdate(bottomTask.id, { position: topTask.position })
    
-    res.status(200).json({message: "Replaced"})
+  res.status(200).json({message: "Replaced"})
+};
+
+const replaceColumnsTask = async (req, res) => {
+
+  const { id, newOwner } = req.body
+  
+  const tasks = await Task.find({ owner: newOwner })
+
+  const updTask = {owner: newOwner, position: tasks.length +1}
+
+  await Task.findByIdAndUpdate(id, updTask)
+   
+  res.status(200).json({message: "Replaced"})
 };
 
 module.exports = {
@@ -73,5 +80,6 @@ module.exports = {
   addTask,
   deleteTask,
   updateTask,
-  replaceTask
+  replaceTask,
+  replaceColumnsTask
 };

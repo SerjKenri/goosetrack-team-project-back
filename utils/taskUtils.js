@@ -7,12 +7,12 @@ const createTask = async body => {
   return newTask;
 };
 
-const findTasks = async (owner, year, month) => {
+const findTasks = async (userOwner, year, month) => {
   if (month.length === 1) {
     month = `0${month}`;
   }
   const tasks = await Task.find({
-    owner,
+    userOwner,
     date: { $regex: `${year}-${month}` },
   }).select('-owner');
   // if (tasks.length <= 0) {
