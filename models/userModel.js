@@ -39,7 +39,11 @@ const userSchema = new Schema({
     default: '',
     required: [true, 'Verify token is required'],
   },
+  passwordResetToken: String,
+  passwordResetExpires: Date,
 });
+
+//-----------save with bcrypt-------------//
 
 userSchema.pre('save', async function (next) {
   const salt = await bcrypt.genSalt(saltRounds);
@@ -51,8 +55,23 @@ userSchema.pre('save', async function (next) {
   next();
 });
 
+//----------bcrypt check password---------//
+
 userSchema.methods.checkPassword = (candidate, hashedPass) =>
   bcrypt.compare(candidate, hashedPass);
+
+//--------create password reset token--------//
+userSchema.methods.createPasswordResetToken = function () {
+  const resetToken = crypto.randomBytes(32).toString('hex');
+
+  this.passwordResetToken = crypto
+    .createHash('sha256')
+    .update(resetToken)
+    .digest('hex');
+  this.passwordResetExpires = Date.now() + 30 * 60 * 1000;
+
+  return resetToken;
+};
 
 const User = mongoose.model('user', userSchema);
 

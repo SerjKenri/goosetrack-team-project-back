@@ -9,8 +9,6 @@ const checkUserPassword = async (req, res, next) => {
 
     const userToChangePass = await User.findById(id).select('password');
 
-    console.log('user1111111111111', userToChangePass);
-
     const userPasswordIsValid = await userToChangePass.checkPassword(
       currentPassword,
       userToChangePass.password
@@ -21,8 +19,6 @@ const checkUserPassword = async (req, res, next) => {
     }
 
     userToChangePass.password = newPassword;
-
-    console.log('user22222222222', userToChangePass);
 
     await userToChangePass.save();
 

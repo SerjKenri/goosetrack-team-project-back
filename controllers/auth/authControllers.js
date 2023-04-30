@@ -4,9 +4,13 @@ const {
   checkVerification,
   logUser,
   saveTokenForUser,
+  getHashedTokenForUser,
 } = require('../../utils/authUtils');
 const { signToken } = require('../../service/JWTServices');
 const AppError = require('../../utils/appError');
+
+const User = require('../../models/userModel');
+const Email = require('../../service/mailService');
 
 const postUser = async (req, res, next) => {
   const newUserToVerify = await createUser(req.body);
@@ -79,7 +83,61 @@ const postLoggedUser = async (req, res, next) => {
     user,
   });
 
+  console.log('======= user loged!!!!!!!!!!!!!!!!!!!!! ======');
+
   res.status(200).json({ user: { id, name, email, verify, token } });
+};
+
+const postRestorePass = async (req, res, next) => {
+  const { email } = req.body;
+
+  const user = await User.findOne({ email });
+
+  if (!user) {
+    // return res.status(200).json({
+    //   message: 'Password reset instruction sent to email',
+    // });
+    return res.status(200).json({
+      message: 'No user with such email (temporary for FRONTEND)',
+    });
+  }
+
+  const otp = user.createPasswordResetToken();
+
+  await user.save({ validateBeforeSave: false });
+
+  try {
+    const resetUrl = `${process.env.DEV_URL}/api/auth/reset-pass/${otp}`;
+    // const resetUrl = `${process.env.DEV_URL}/goosetrack-team-project-front/reset-pass/${otp}`;
+
+    await new Email(user, resetUrl).sendPasswordRestore();
+  } catch (err) {
+    user.passwordResetToken = undefined;
+    user.passwordResetExpires = undefined;
+    await user.save({ validateBeforeSave: false });
+  }
+
+  res.status(200).json({
+    message: 'Password reset instruction sent to email',
+  });
+};
+
+const patchResetPass = async (req, res, next) => {
+  const { otp } = req.params;
+
+  const user = await getHashedTokenForUser(otp);
+
+  if (!user) return next(new AppError(400, 'Token is invalid'));
+
+  user.password = req.body.password;
+  user.passwordResetToken = undefined;
+  user.passwordResetExpires = undefined;
+
+  await user.save({ validateBeforeSave: false });
+
+  user.password = undefined;
+
+  res.status(200).json({ message: 'Password successfully changed' });
 };
 
 module.exports = {
@@ -87,4 +145,6 @@ module.exports = {
   postLoggedUser,
   getUserVerification,
   postVerifiedUser,
+  postRestorePass,
+  patchResetPass,
 };
