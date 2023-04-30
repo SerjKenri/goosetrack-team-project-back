@@ -27,7 +27,22 @@ const addColumn = async (req, res) => {
 
 const deleteColumn = async (req, res) => {
   const { id } = req.params;
-  const { _id } = req.user;
+  // const { _id } = req.user;
+
+  const { _id, position, owner } = await Column.findById(req.params.id);
+  await Column.bulkWrite([
+    {
+      deleteMany: {
+        filter: { _id },
+      },
+    },
+    {
+      updateMany: {
+        filter: { position: { $gt: position }, owner },
+        update: { $inc: { position: -1 } },
+      },
+    },
+  ]);
 
   // const columns = await Column.find({ owner: _id });
   // positions = columns.map(column => column.position);
@@ -36,7 +51,7 @@ const deleteColumn = async (req, res) => {
   // const column = await Column.findOne({ _id: id, owner: _id });
   // console.log(column.position);
 
-  await Column.findOneAndDelete({ _id: id, owner: _id });
+  // await Column.findOneAndDelete({ _id: id, owner: _id });
 
   res.status(204).json();
 };
