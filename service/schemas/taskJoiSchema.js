@@ -12,6 +12,7 @@ const taskJoiSchema = Joi.object({
   priority: Joi.string().valid(...Object.values(PRIORITY)), // ["low","medium","high"]
   category: Joi.string().valid(...Object.values(CATEGORY)), // ["toDo","inProgress","done"]
   columnId: Joi.string(),
+  position: Joi.number(),
 });
 
 module.exports = taskJoiSchema;
