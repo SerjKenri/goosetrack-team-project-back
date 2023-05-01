@@ -113,6 +113,6 @@ module.exports = {
   addTask,
   deleteTask,
   updateTask,
-  replaceTask,
-  replaceColumnsTask,
+  // replaceTask,
+  // replaceColumnsTask,
 };
