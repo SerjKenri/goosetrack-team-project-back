@@ -12,6 +12,8 @@ const {
   addTask,
   deleteTask,
   updateTask,
+  // replaceTask,
+  // replaceColumnsTask,
 } = require('../../controllers/tasks/taskControllers');
 
 tasksRouter.use(protectedRout);
@@ -22,7 +24,10 @@ tasksRouter.post('/', validation(taskSchema), ctrlWrapper(addTask));
 
 tasksRouter.patch('/:id', validation(taskSchema), ctrlWrapper(updateTask));
 
-tasksRouter.patch('/:id', validation(taskSchema), ctrlWrapper(updateTask));
+// tasksRouter.patch('/:id', validation(taskSchema), ctrlWrapper(replaceTask));
+
+// tasksRouter.patch('/:id', validation(taskSchema), ctrlWrapper(replaceColumnsTask));
+
 
 tasksRouter.delete('/:id', ctrlWrapper(deleteTask));
 
