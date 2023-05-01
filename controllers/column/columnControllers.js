@@ -14,7 +14,7 @@ const addColumn = async (req, res) => {
 
 
   const columns = await Column.find({ owner: req.user._id })
-  const newColumn = {...req.body, position: columns.length + 1}
+  const newColumn = {...req.body, position: columns.length + 1, owner: req.user._id}
   // req.body.newColumn = newColumn
 
   // const columns = await Column.create({ owner: _id });
@@ -58,32 +58,44 @@ const deleteColumn = async (req, res) => {
 
 const updateColumn = async (req, res) => {
 
-  const column = await Column.findByIdAndUpdate(req.params.id, req.body,  { new: true });
+  if (req.body.operationType === 'updateColumn') {
 
-  res.status(200).json(column);
+    const column = await Column.findByIdAndUpdate(req.params.id, req.body,  { new: true });
+
+    res.status(200).json(column);}
+
+  if (req.body.operationType === 'replaceColumn') {
+
+    const { source, destination } = req.body;
+
+    await Task.findByIdAndUpdate(source.id, { position: destination.position });
+    await Task.findByIdAndUpdate(destination.id, { position: source.position });
+
+    res.status(200).json({ message: 'Replaced' })
+  }
 };
 
-const replaceColumn = async (req, res) => {
+// const replaceColumn = async (req, res) => {
 
-    const {type, _id, owner, position} = req.body
+//     const {type, _id, owner, position} = req.body
 
-    let positionToReplace
+//     let positionToReplace
 
-    if (type === 'up') positionToReplace = position - 1
+//     if (type === 'up') positionToReplace = position - 1
 
-    if (type === 'down') positionToReplace = position + 1
+//     if (type === 'down') positionToReplace = position + 1
 
     
-    await Column.findOneAndUpdate({ owner, position: positionToReplace }, { position })
-    await Column.findByIdAndUpdate(_id, { position: positionToReplace })
+//     await Column.findOneAndUpdate({ owner, position: positionToReplace }, { position })
+//     await Column.findByIdAndUpdate(_id, { position: positionToReplace })
    
-    res.status(200).json({message: "Replaced"})
-};
+//     res.status(200).json({message: "Replaced"})
+// };
 
 module.exports = {
   getColumns,
   addColumn,
   deleteColumn,
   updateColumn,
-  replaceColumn
+  // replaceColumn
 };

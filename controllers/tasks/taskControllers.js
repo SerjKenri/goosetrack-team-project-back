@@ -46,33 +46,67 @@ const deleteTask = async (req, res) => {
 };
 
 const updateTask = async (req, res) => {
-  const result = await Task.findByIdAndUpdate(req.params.id, req.body, {
-    new: true,
-  });
 
-  res.status(200).json(result);
+  if (req.body.operationType === 'updateTask') {
+  
+    const result = await Task.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+    });
+
+    res.status(200).json(result)
+  }
+
+  if (req.body.operationType === 'replaceTask') {
+
+    const { source, destination } = req.body;
+
+    await Task.findByIdAndUpdate(source.id, { position: destination.position });
+    await Task.findByIdAndUpdate(destination.id, { position: source.position });
+
+    res.status(200).json({ message: 'Replaced' })
+  }
+
+  if (req.body.operationType === 'replaceColumnsTask') {
+
+    const { id, newColumnId } = req.body;
+    const tasks = await Task.find({ columnId: newColumnId });
+    const updTask = { columnId: newColumnId, position: tasks.length + 1 };
+    await Task.findByIdAndUpdate(id, updTask);
+
+    res.status(200).json({ message: 'Replaced' });
+  }
 };
 
-const replaceTask = async (req, res) => {
-  const { topTask, bottomTask } = req.body;
+// const updateTask = async (req, res) => {
+  
+//   const result = await Task.findByIdAndUpdate(req.params.id, req.body, {
+//     new: true,
+//   });
 
-  await Task.findByIdAndUpdate(topTask.id, { position: bottomTask.position });
-  await Task.findByIdAndUpdate(bottomTask.id, { position: topTask.position });
+//   res.status(200).json(result);
+// };
 
-  res.status(200).json({ message: 'Replaced' });
-};
+// const replaceTask = async (req, res) => {
+//   const { topTask, bottomTask } = req.body;
 
-const replaceColumnsTask = async (req, res) => {
-  const { id, newColumnId } = req.body;
+//   await Task.findByIdAndUpdate(topTask.id, { position: bottomTask.position });
+//   await Task.findByIdAndUpdate(bottomTask.id, { position: topTask.position });
 
-  const tasks = await Task.find({ columnId: newColumnId });
+//   res.status(200).json({ message: 'Replaced' });
+// };
 
-  const updTask = { columnId: newColumnId, position: tasks.length + 1 };
+// const replaceColumnsTask = async (req, res) => {
+//   const { id, newColumnId } = req.body;
 
-  await Task.findByIdAndUpdate(id, updTask);
+//   const tasks = await Task.find({ columnId: newColumnId });
 
-  res.status(200).json({ message: 'Replaced' });
-};
+//   const updTask = { columnId: newColumnId, position: tasks.length + 1 };
+
+//   await Task.findByIdAndUpdate(id, updTask);
+
+//   res.status(200).json({ message: 'Replaced' });
+// };
+
 
 module.exports = {
   getTasks,
