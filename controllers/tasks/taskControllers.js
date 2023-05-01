@@ -15,9 +15,11 @@ const getTasks = async (req, res) => {
 };
 
 const addTask = async (req, res) => {
+
+  const { _id } = req.user;
   
   const tasks = await Task.find({ owner: req.body.owner })
-  const newtask = { ...req.body, position: tasks.length + 1 }
+  const newtask = { ...req.body, position: tasks.length + 1, userOwner: _id}
   
   const task = await Task.create(newtask);
 
