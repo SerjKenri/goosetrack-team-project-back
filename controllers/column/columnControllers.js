@@ -1,5 +1,5 @@
 const Column = require('../../models/columnModel');
-const Task = require('../../models/taskModel');
+// const Task = require('../../models/taskModel');
 
 const getColumns = async (req, res) => {
   const { _id } = req.user;
@@ -68,8 +68,8 @@ const updateColumn = async (req, res) => {
 
     const { source, destination } = req.body;
 
-    await Task.findByIdAndUpdate(source.id, { position: destination.position });
-    await Task.findByIdAndUpdate(destination.id, { position: source.position });
+    await Column.findByIdAndUpdate(source.id, { position: destination.position });
+    await Column.findByIdAndUpdate(destination.id, { position: source.position });
 
     res.status(200).json({ message: 'Replaced' })
   }
