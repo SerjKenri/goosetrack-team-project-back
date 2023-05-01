@@ -22,13 +22,13 @@ const postUser = async (req, res, next) => {
 
   const { name, email, _id } = newUserToVerify;
 
-  const todoColumn = { columnName: 'To do', position: 1, owner: _id };
+  const todoColumn = { columnName: 'toDo', position: 1, owner: _id };
   const inprogressColumn = {
-    columnName: 'In progress',
+    columnName: 'inProgress',
     position: 2,
     owner: _id,
   };
-  const doneColumn = { columnName: 'Done', position: 3, owner: _id };
+  const doneColumn = { columnName: 'done', position: 3, owner: _id };
 
   await Column.create(todoColumn);
   await Column.create(inprogressColumn);

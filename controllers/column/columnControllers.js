@@ -68,8 +68,27 @@ const updateColumn = async (req, res) => {
 
     const { source, destination } = req.body;
 
-    await Column.findByIdAndUpdate(source.id, { position: destination.position });
-    await Column.findByIdAndUpdate(destination.id, { position: source.position });
+    if (!destination.position) {
+
+      const columns = await Column.find({ owner: req.user._id })
+      await Column.updateMany({ position: { $gt: source.position }, owner: req.user._id }, { $inc: { position: -1 } })
+      await Column.findByIdAndUpdate(source.id, { position: columns.length });
+    }
+
+    if (source.position > destination.position) {
+      
+      await Column.updateMany({ position: { $gte: destination.position, $lt: source.position }, owner: req.user._id }, { $inc: { position: +1 } })
+      await Column.findByIdAndUpdate(source.id, { position: destination.position })
+    }
+    
+    if (source.position < destination.position) {
+      
+      await Column.updateMany({ position: { $gt: source.position, $lte: destination.position }, owner: req.user._id }, { $inc: { position: -1 } })
+      await Column.findByIdAndUpdate(source.id, { position: destination.position })
+    }
+
+    // await Column.findByIdAndUpdate(source.id, { position: destination.position });
+    // await Column.findByIdAndUpdate(destination.id, { position: source.position });
 
     res.status(200).json({ message: 'Replaced' })
   }
