@@ -1,5 +1,8 @@
 const Joi = require('joi');
 
+const PASSWD_REGEX =
+  /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\\$%\\^&\\*])(?=.{8,128})/;
+
 const patchUpdateUserValidation = (req, res, next) => {
   const schema = Joi.object({
     name: Joi.string().max(16).required(),

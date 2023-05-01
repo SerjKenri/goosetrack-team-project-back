@@ -1,6 +1,8 @@
 const { v4: uuidv4 } = require('uuid');
-const User = require('../models/userModel');
 const Email = require('../service/mailService');
+const crypto = require('crypto');
+const { Unauthorized } = require('http-errors');
+const User = require('../models/userModel');
 
 const createUser = async body => {
   try {
@@ -86,10 +88,24 @@ const saveTokenForUser = async (id, body) => {
   }
 };
 
+const getHashedTokenForUser = async otp => {
+  try {
+    const hashedToken = crypto.createHash('sha256').update(otp).digest('hex');
+
+    return await User.findOne({
+      passwordResetToken: hashedToken,
+      passwordResetExpires: { $gt: Date.now() },
+    });
+  } catch (error) {
+    console.log(error.message);
+  }
+};
+
 module.exports = {
   createUser,
   verifyUser,
   checkVerification,
   logUser,
   saveTokenForUser,
+  getHashedTokenForUser,
 };
