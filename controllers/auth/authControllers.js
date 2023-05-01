@@ -10,7 +10,6 @@ const { signToken } = require('../../service/JWTServices');
 const AppError = require('../../utils/appError');
 const Column = require('../../models/columnModel');
 
-
 const User = require('../../models/userModel');
 const Email = require('../../service/mailService');
 
@@ -23,20 +22,26 @@ const postUser = async (req, res, next) => {
 
   const { name, email, _id } = newUserToVerify;
 
-  const todoColumn = { columnName: "To do", position: 1, owner: _id }
-  const inprogressColumn = {columnName: "In progress", position: 2, owner: _id}
-  const doneColumn = {columnName: "Done", position: 3, owner: _id}
+  const todoColumn = { columnName: 'To do', position: 1, owner: _id };
+  const inprogressColumn = {
+    columnName: 'In progress',
+    position: 2,
+    owner: _id,
+  };
+  const doneColumn = { columnName: 'Done', position: 3, owner: _id };
 
   await Column.create(todoColumn);
   await Column.create(inprogressColumn);
   await Column.create(doneColumn);
 
-  res.status(201).json({ user: { name, email } });
+  res.status(201).json({
+    user: { name, email },
+    message: `Verification email send to user${"'"}s email`,
+  });
 };
 
 const getUserVerification = async (req, res, next) => {
   const { verificationToken } = req.params;
-
   const userHasVerifyToken = await verifyUser(verificationToken);
 
   if (!userHasVerifyToken) {
@@ -58,9 +63,7 @@ const postVerifiedUser = async (req, res, next) => {
     return next(new AppError(400, 'Verification has already been passed'));
   }
 
-  // res.status(200).json({ message: 'Verification email sent' });
-
-  res.status(200).json({ message: 'Verification is successful' });
+  res.status(200).json({ message: 'Verification email sent' });
 };
 
 const postLoggedUser = async (req, res, next) => {
@@ -92,8 +95,6 @@ const postLoggedUser = async (req, res, next) => {
     token,
     user,
   });
-
-  console.log('======= user loged!!!!!!!!!!!!!!!!!!!!! ======');
 
   res.status(200).json({ user: { id, name, email, verify, token } });
 };

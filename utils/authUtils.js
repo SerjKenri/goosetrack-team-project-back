@@ -1,7 +1,6 @@
 const { v4: uuidv4 } = require('uuid');
 const Email = require('../service/mailService');
 const crypto = require('crypto');
-const { Unauthorized } = require('http-errors');
 const User = require('../models/userModel');
 
 const createUser = async body => {
@@ -24,8 +23,8 @@ const createUser = async body => {
 
     await new Email(
       newUser,
-      `${process.env.DEV_URL}/api/auth/verify/${newUser.verificationToken}`
-      // `${process.env.DEV_URL}/goosetrack-team-project-front/verify/${newUser.verificationToken}`
+      // `${process.env.DEV_URL}/api/auth/verify/${newUser.verificationToken}`
+      `${process.env.FRONT_DEV_URL}/goosetrack-team-project-front/verify/${newUser.verificationToken}`
     ).sendVerification();
 
     return newUser;
@@ -60,8 +59,8 @@ const checkVerification = async body => {
 
     await new Email(
       userWithTokenExist,
-      `${process.env.DEV_URL}/api/auth/verify/${userWithTokenExist.verificationToken}`
-      // `${process.env.DEV_URL}/goosetrack-team-project-front/verify/${userWithTokenExist.verificationToken}`
+      // `${process.env.DEV_URL}/api/auth/verify/${userWithTokenExist.verificationToken}`
+      `${process.env.FRONT_DEV_URL}/goosetrack-team-project-front/verify/${userWithTokenExist.verificationToken}`
     ).sendVerification();
 
     return userWithTokenExist;
