@@ -24,7 +24,7 @@ const taskSchema = Schema(
       type: Number,
       required: true,
     },
-    owner: {
+    columnId: {
       type: Schema.Types.ObjectId,
       ref: 'column',
       required: true,

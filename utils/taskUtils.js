@@ -14,14 +14,14 @@ const findTasks = async (userOwner, year, month) => {
   const tasks = await Task.find({
     userOwner,
     date: { $regex: `${year}-${month}` },
-  }).select('-owner');
+  }).select('-userOwner');
   // if (tasks.length <= 0) {
   //   throw new NotFound('Tasks have not been found');
   // }
   return tasks;
 };
 
-const removeTask = async (_id) => {
+const removeTask = async _id => {
   // const task = await Task.findByIdAndRemove(id);
   const task = await Task.findByIdAndDelete(_id);
 
