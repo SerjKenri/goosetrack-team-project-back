@@ -68,7 +68,7 @@ const updateColumn = async (req, res) => {
 
     const { source, destination } = req.body;
 
-    if (!destination.position) {
+    if (!destination.id) {
 
       const columns = await Column.find({ owner: req.user._id })
       await Column.updateMany({ position: { $gt: source.position }, owner: req.user._id }, { $inc: { position: -1 } })

@@ -1,5 +1,7 @@
 const validation = schema => {
   return (req, res, next) => {
+      console.log(req.body)
+
     const { title, start, end, date, priority, category, columnId, position } = req.body
     const toValidate = { title, start, end, date, priority, category, columnId, position }
     const { error } = schema.validate(toValidate);

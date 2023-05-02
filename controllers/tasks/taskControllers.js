@@ -62,7 +62,7 @@ const updateTask = async (req, res) => {
 
     const { columnId } = await Task.findById(source.id)
 
-    if (!destination.position) {
+    if (!destination.id) {
 
       const tasks = await Task.find({ columnId: columnId })
       await Task.updateMany({ position: { $gt: source.position }, columnId: columnId }, { $inc: { position: -1 } })
@@ -88,7 +88,7 @@ const updateTask = async (req, res) => {
 
     const { source, destination } = req.body;
 
-    if (!destination.position) {
+    if (!destination.id) {
         
       const tasks = await Task.find({columnId: destination.columnId})
 
@@ -110,9 +110,9 @@ const updateTask = async (req, res) => {
         ])
       }
 
-    const tasks = await Task.find({ columnId: newColumnId });
-    const updTask = { columnId: newColumnId, position: tasks.length + 1 };
-    await Task.findByIdAndUpdate(id, updTask);
+    // const tasks = await Task.find({ columnId: newColumnId });
+    // const updTask = { columnId: newColumnId, position: tasks.length + 1 };
+    // await Task.findByIdAndUpdate(id, updTask);
 
     res.status(200).json({ message: 'Replaced' });
   }
