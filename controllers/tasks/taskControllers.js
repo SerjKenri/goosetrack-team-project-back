@@ -67,21 +67,42 @@ const updateTask = async (req, res) => {
 
     if (!destination.id) {
 
+      console.log('operationType: replaceTask => to the end')
+
+
       const tasks = await Task.find({ columnId: columnId })
-      await Task.updateMany({ position: { $gt: source.position }, columnId: columnId }, { $inc: { position: -1 } })
-      await Task.findByIdAndUpdate(source.id, { position: tasks.length + 1 });
+      const tasksIncolumn = await Task.updateMany({ position: { $gt: source.position }, columnId: columnId }, { $inc: { position: -1 } })
+      console.log('tasksIncolumn: ', tasksIncolumn)
+
+      const replacedTask = await Task.findByIdAndUpdate(source.id, { position: tasks.length + 1 });
+      console.log('replacedTask: ', replacedTask)
+
     }
 
     if (source.position > destination.position) {
+
+      console.log('operationType: replaceTask => to the top')
+
       
-      await Task.updateMany({ position: { $gte: destination.position, $lt: source.position }, columnId: columnId }, { $inc: { position: +1 } })
-      await Task.findByIdAndUpdate(source.id, { position: destination.position })
+      const tasksIncolumn = await Task.updateMany({ position: { $gte: destination.position, $lt: source.position }, columnId: columnId }, { $inc: { position: +1 } })
+      console.log('tasksIncolumn: ', tasksIncolumn)
+
+      const replacedTask = await Task.findByIdAndUpdate(source.id, { position: destination.position })
+      console.log('replacedTask: ', replacedTask)
+
     }
     
     if (source.position < destination.position) {
+
+      console.log('operationType: replaceTask => to the bottom')
+
       
-      await Task.updateMany({ position: { $gt: source.position, $lte: destination.position }, columnId: columnId }, { $inc: { position: -1 } })
-      await Task.findByIdAndUpdate(source.id, { position: destination.position })
+      const tasksIncolumn = await Task.updateMany({ position: { $gt: source.position, $lte: destination.position }, columnId: columnId }, { $inc: { position: -1 } })
+      console.log('tasksIncolumn: ', tasksIncolumn)
+
+      const replacedTask = await Task.findByIdAndUpdate(source.id, { position: destination.position })
+      console.log('replacedTask: ', replacedTask)
+
     }
     
 
@@ -96,34 +117,43 @@ const updateTask = async (req, res) => {
 
     if (!destination.id) {
         
-      const tasks = await Task.find({columnId: destination.columnId})
+      const tasks = await Task.find({ columnId: destination.columnId })
 
-        await Task.updateMany({ position: { $gte: destination.columnId }, columnId: destination.columnId }, { $inc: { position: +1 } })
-      await Task.findByIdAndUpdate(source.id, { position: tasks.length + 1, columnId: destination.columnId })
+      // const tasksIncolumn = await Task.updateMany({ position: { $gte: destination.columnId }, columnId: destination.columnId }, { $inc: { position: +1 } })
+      // console.log('tasksIncolumn: ', tasksIncolumn)
+
+      const replacedTask = await Task.findByIdAndUpdate(source.id, { position: tasks.length + 1, columnId: destination.columnId })
+      console.log('replacedTask: ', replacedTask)
+
       
-          res.status(200).json({ message: 'Replaced' });
+      res.status(200).json({ message: 'Replaced' });
 
 
-      } else {
+    } else {
 
-        await Task.updateMany({ position: { $gte: destination.position }, columnId: destination.columnId }, { $inc: { position: +1 } })
-        await Task.findByIdAndUpdate(source.id, { position: destination.position,  columnId: destination.columnId})
+      const tasksIncolumn = await Task.updateMany({ position: { $gte: destination.position }, columnId: destination.columnId }, { $inc: { position: +1 } })
+      console.log('tasksIncolumn: ', tasksIncolumn)
 
-        await Task.bulkWrite([{deleteOne: {filter: { _id: source.id }}},
-        {
-            updateMany: {
-                filter: { columnId: source.columnId, position: { $gt: source.position } },
-                update: { $inc: { idx: -1 } },
-            },
-        },
-        ])
-      }
+      const replacedTask = await Task.findByIdAndUpdate(source.id, { position: destination.position, columnId: destination.columnId })
+      console.log('replacedTask: ', replacedTask)
 
-    // const tasks = await Task.find({ columnId: newColumnId });
-    // const updTask = { columnId: newColumnId, position: tasks.length + 1 };
-    // await Task.findByIdAndUpdate(id, updTask);
+      // await Task.bulkWrite([
+      //   { deleteOne: { filter: { _id: source.id } } },
+      //   {
+      //       updateMany: {
+      //           filter: { columnId: source.columnId, position: { $gt: source.position } },
+      //           update: { $inc: { idx: -1 } },
+      //       },
+      //   },
+      //   ])
+      // }
 
-    res.status(200).json({ message: 'Replaced' });
+      // const tasks = await Task.find({ columnId: newColumnId });
+      // const updTask = { columnId: newColumnId, position: tasks.length + 1 };
+      // await Task.findByIdAndUpdate(id, updTask);
+
+      res.status(200).json({ message: 'Replaced' });
+    }
   }
 };
 
@@ -165,4 +195,4 @@ module.exports = {
   updateTask,
   // replaceTask,
   // replaceColumnsTask,
-};
+}
