@@ -76,9 +76,7 @@ const postLoggedUser = async (req, res, next) => {
   }
 
   if (!user.verify) {
-    return next(
-      new AppError(401, 'Email is not verified (Email or password is wrong)')
-    );
+    return next(new AppError(401, 'Email is not verified'));
   }
 
   const passwordIsValid = await user.checkPassword(password, user.password);
