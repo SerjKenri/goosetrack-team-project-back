@@ -14,7 +14,7 @@ const findTasks = async (userOwner, year, month) => {
   const tasks = await Task.find({
     userOwner,
     date: { $regex: `${year}-${month}` },
-  }).sort({position: 1})
+  })
   // if (tasks.length <= 0) {
   //   throw new NotFound('Tasks have not been found');
   // }
