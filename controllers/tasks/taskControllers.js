@@ -133,6 +133,10 @@ const updateTask = async (req, res) => {
       console.log('replacedTask: ', replacedTask)
 
       
+      const tasksInSorcecolumn = await Task.updateMany({ position: { $gte: source.position }, columnId: source.columnId }, { $inc: { position: -1 } })
+            console.log('tasksInSorcecolumn: ', tasksInSorcecolumn)
+
+      
       res.status(200).json({ message: 'Replaced' });
 
 
@@ -140,9 +144,15 @@ const updateTask = async (req, res) => {
 
       const tasksIncolumn = await Task.updateMany({ position: { $gte: destination.position }, columnId: destination.columnId }, { $inc: { position: +1 } })
       console.log('tasksIncolumn: ', tasksIncolumn)
+      
 
       const replacedTask = await Task.findByIdAndUpdate(source.id, { position: destination.position, columnId: destination.columnId })
       console.log('replacedTask: ', replacedTask)
+
+      const tasksInSorcecolumn = await Task.updateMany({ position: { $gte: source.position }, columnId: source.columnId }, { $inc: { position: -1 } })
+            console.log('tasksInSorcecolumn: ', tasksInSorcecolumn)
+
+
 
       // await Task.bulkWrite([
       //   { deleteOne: { filter: { _id: source.id } } },
