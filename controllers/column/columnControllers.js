@@ -72,7 +72,7 @@ const updateColumn = async (req, res) => {
 
       const columns = await Column.find({ owner: req.user._id })
       await Column.updateMany({ position: { $gt: source.position }, owner: req.user._id }, { $inc: { position: -1 } })
-      await Column.findByIdAndUpdate(source.id, { position: columns.length });
+      await Column.findByIdAndUpdate(source.id, { position: columns.length + 1 });
     }
 
     if (source.position > destination.position) {
