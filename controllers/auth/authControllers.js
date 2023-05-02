@@ -118,8 +118,9 @@ const postRestorePass = async (req, res, next) => {
   await user.save({ validateBeforeSave: false });
 
   try {
-    const resetUrl = `${process.env.DEV_URL}/api/auth/reset-pass/${otp}`;
+    // const resetUrl = `${process.env.DEV_URL}/api/auth/reset-pass/${otp}`;
     // const resetUrl = `${process.env.DEV_URL}/goosetrack-team-project-front/reset-pass/${otp}`;
+    const resetUrl = `${process.env.FRONT_DEV_URL}/goosetrack-team-project-front/reset-pass/${otp}`;
 
     await new Email(user, resetUrl).sendPasswordRestore();
   } catch (err) {
@@ -140,7 +141,7 @@ const patchResetPass = async (req, res, next) => {
 
   if (!user) return next(new AppError(400, 'Token is invalid'));
 
-  user.password = req.body.password;
+  user.password = req.body.newPassword;
   user.passwordResetToken = undefined;
   user.passwordResetExpires = undefined;
 
