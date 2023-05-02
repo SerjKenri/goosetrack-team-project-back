@@ -60,13 +60,33 @@ const updateTask = async (req, res) => {
 
     const { source, destination } = req.body;
 
-    await Task.findByIdAndUpdate(source.id, { position: destination.position });
-    await Task.findByIdAndUpdate(destination.id, { position: source.position });
+    const { columnId } = await Task.findById(source.id)
+
+    if (!destination.position) {
+
+      const tasks = await Task.find({ columnId: columnId })
+      await Task.updateMany({ position: { $gt: source.position }, columnId: columnId }, { $inc: { position: -1 } })
+      await Task.findByIdAndUpdate(source.id, { position: tasks.length });
+    }
+
+    if (source.position > destination.position) {
+      
+      await Task.updateMany({ position: { $gte: destination.position, $lt: source.position }, columnId: columnId }, { $inc: { position: +1 } })
+      await Task.findByIdAndUpdate(source.id, { position: destination.position })
+    }
+    
+    if (source.position < destination.position) {
+      
+      await Task.updateMany({ position: { $gt: source.position, $lte: destination.position }, columnId: columnId }, { $inc: { position: -1 } })
+      await Task.findByIdAndUpdate(source.id, { position: destination.position })
+    }
 
     res.status(200).json({ message: 'Replaced' })
   }
 
   if (req.body.operationType === 'replaceColumnsTask') {
+
+    console.log(req.body)
 
     const { id, newColumnId } = req.body;
     const tasks = await Task.find({ columnId: newColumnId });
