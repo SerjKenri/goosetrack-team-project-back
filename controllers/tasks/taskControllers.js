@@ -48,6 +48,7 @@ const deleteTask = async (req, res) => {
 const updateTask = async (req, res) => {
 
   if (req.body.operationType === 'updateTask') {
+    console.log('operationType: updateTask')
   
     const result = await Task.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
@@ -57,6 +58,8 @@ const updateTask = async (req, res) => {
   }
 
   if (req.body.operationType === 'replaceTask') {
+
+    console.log('operationType: replaceTask')
 
     const { source, destination } = req.body;
 
@@ -80,11 +83,14 @@ const updateTask = async (req, res) => {
       await Task.updateMany({ position: { $gt: source.position, $lte: destination.position }, columnId: columnId }, { $inc: { position: -1 } })
       await Task.findByIdAndUpdate(source.id, { position: destination.position })
     }
+    
 
     res.status(200).json({ message: 'Replaced' })
   }
 
   if (req.body.operationType === 'replaceColumnsTask') {
+
+    console.log('operationType: replaceColumnsTask')
 
     const { source, destination } = req.body;
 
@@ -93,7 +99,10 @@ const updateTask = async (req, res) => {
       const tasks = await Task.find({columnId: destination.columnId})
 
         await Task.updateMany({ position: { $gte: destination.columnId }, columnId: destination.columnId }, { $inc: { position: +1 } })
-        await Task.findByIdAndUpdate(source.id, { position: tasks.length + 1,  columnId: destination.columnId})
+      await Task.findByIdAndUpdate(source.id, { position: tasks.length + 1, columnId: destination.columnId })
+      
+          res.status(200).json({ message: 'Replaced' });
+
 
       } else {
 
