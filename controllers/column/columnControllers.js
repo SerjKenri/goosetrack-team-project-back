@@ -14,7 +14,7 @@ const addColumn = async (req, res) => {
 
 
   const columns = await Column.find({ owner: req.user._id })
-  const newColumn = {...req.body, position: columns.length + 1, owner: req.user._id}
+  const newColumn = {...req.body, position: columns.length, owner: req.user._id}
   // req.body.newColumn = newColumn
 
   // const columns = await Column.create({ owner: _id });
@@ -72,7 +72,7 @@ const updateColumn = async (req, res) => {
 
       const columns = await Column.find({ owner: req.user._id })
       await Column.updateMany({ position: { $gt: source.position }, owner: req.user._id }, { $inc: { position: -1 } })
-      await Column.findByIdAndUpdate(source.id, { position: columns.length + 1 });
+      await Column.findByIdAndUpdate(source.id, { position: columns.length });
     }
 
     if (source.position > destination.position) {
