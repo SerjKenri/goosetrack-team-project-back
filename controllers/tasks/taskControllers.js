@@ -18,7 +18,7 @@ const addTask = async (req, res) => {
   const { _id } = req.user;
 
   const tasks = await Task.find({ columnId: req.body.columnId });
-  const newtask = { ...req.body, position: tasks.length + 1, userOwner: _id };
+  const newtask = { ...req.body, position: tasks.length, userOwner: _id };
 
   const task = await Task.create(newtask);
 
@@ -46,6 +46,8 @@ const deleteTask = async (req, res) => {
 };
 
 const updateTask = async (req, res) => {
+        console.log(req.body)
+
 
   if (req.body.operationType === 'updateTask') {
     console.log('operationType: updateTask')
@@ -74,7 +76,7 @@ const updateTask = async (req, res) => {
       const tasksIncolumn = await Task.updateMany({ position: { $gt: source.position }, columnId: columnId }, { $inc: { position: -1 } })
       console.log('tasksIncolumn: ', tasksIncolumn)
 
-      const replacedTask = await Task.findByIdAndUpdate(source.id, { position: tasks.length + 1 });
+      const replacedTask = await Task.findByIdAndUpdate(source.id, { position: tasks.length });
       console.log('replacedTask: ', replacedTask)
 
     }
@@ -116,13 +118,18 @@ const updateTask = async (req, res) => {
     const { source, destination } = req.body;
 
     if (!destination.id) {
+
+      console.log('operationType: replaceColumnsTask ==> to the end')
+
         
       const tasks = await Task.find({ columnId: destination.columnId })
+
+      console.log(tasks)
 
       // const tasksIncolumn = await Task.updateMany({ position: { $gte: destination.columnId }, columnId: destination.columnId }, { $inc: { position: +1 } })
       // console.log('tasksIncolumn: ', tasksIncolumn)
 
-      const replacedTask = await Task.findByIdAndUpdate(source.id, { position: tasks.length + 1, columnId: destination.columnId })
+      const replacedTask = await Task.findByIdAndUpdate(source.id, { position: tasks.length, columnId: destination.columnId }, {new: true})
       console.log('replacedTask: ', replacedTask)
 
       
