@@ -66,7 +66,7 @@ const updateTask = async (req, res) => {
 
       const tasks = await Task.find({ columnId: columnId })
       await Task.updateMany({ position: { $gt: source.position }, columnId: columnId }, { $inc: { position: -1 } })
-      await Task.findByIdAndUpdate(source.id, { position: tasks.length });
+      await Task.findByIdAndUpdate(source.id, { position: tasks.length + 1 });
     }
 
     if (source.position > destination.position) {
@@ -86,9 +86,30 @@ const updateTask = async (req, res) => {
 
   if (req.body.operationType === 'replaceColumnsTask') {
 
-    console.log(req.body)
+    const { source, destination } = req.body;
 
-    const { id, newColumnId } = req.body;
+    if (!destination.position) {
+        
+      const tasks = await Task.find({columnId: destination.columnId})
+
+        await Task.updateMany({ position: { $gte: destination.columnId }, columnId: destination.columnId }, { $inc: { position: +1 } })
+        await Task.findByIdAndUpdate(source.id, { position: tasks.length + 1,  columnId: destination.columnId})
+
+      } else {
+
+        await Task.updateMany({ position: { $gte: destination.position }, columnId: destination.columnId }, { $inc: { position: +1 } })
+        await Task.findByIdAndUpdate(source.id, { position: destination.position,  columnId: destination.columnId})
+
+        await Task.bulkWrite([{deleteOne: {filter: { _id: source.id }}},
+        {
+            updateMany: {
+                filter: { columnId: source.columnId, position: { $gt: source.position } },
+                update: { $inc: { idx: -1 } },
+            },
+        },
+        ])
+      }
+
     const tasks = await Task.find({ columnId: newColumnId });
     const updTask = { columnId: newColumnId, position: tasks.length + 1 };
     await Task.findByIdAndUpdate(id, updTask);
