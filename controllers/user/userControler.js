@@ -42,7 +42,7 @@ const changeUser = async (req, res, next) => {
       userWithAvatar;
     return res
       .status(200)
-      .json({ id, name, email, avatarURL, birthDay, phone, messenger });
+      .json({user: { id, name, email, avatarURL, birthDay, phone, messenger }});
   }
 
   //-------if no avatar-------//
@@ -55,7 +55,7 @@ const changeUser = async (req, res, next) => {
 
   res
     .status(200)
-    .json({ id, name, email, avatarURL, birthDay, phone, messenger });
+  .json({user: { id, name, email, avatarURL, birthDay, phone, messenger }});
 };
 
 const updateMyPassword = (req, res) => {
