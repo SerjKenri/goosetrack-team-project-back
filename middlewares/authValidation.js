@@ -12,7 +12,6 @@ const userRegValidation = (req, res, next) => {
       })
       .required(),
     password: Joi.string()
-      // .regex(PASSWD_REGEX)
       .required(),
   });
 

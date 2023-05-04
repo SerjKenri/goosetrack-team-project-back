@@ -4,14 +4,11 @@ const columnRouter = express.Router();
 const ctrlWrapper = require('../../middlewares/ctrlWrapper');
 const protectedRout = require('../../middlewares/authMiddleware');
 
-// const validation = require('../../middlewares/joiValidation');
-
 const {
   getColumns,
   addColumn,
   deleteColumn,
   updateColumn,
-  // replaceColumn
 } = require('../../controllers/column/columnControllers');
 
 columnRouter.use(protectedRout);

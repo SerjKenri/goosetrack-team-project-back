@@ -21,7 +21,6 @@ const patchUpdateUserValidation = (req, res, next) => {
   if (valodationResult.error) {
     const msg = valodationResult.error.details[0].message;
     return res.status(400).json({ message: msg });
-    // return res.status(400).json({ message: "Invalid user email or password" });
   }
 
   next();

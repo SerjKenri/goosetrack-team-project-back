@@ -1,9 +1,6 @@
 const Task = require('../../models/taskModel');
 const {
-  findTasks,
-  removeTask,
-  createTask,
-  updateTaskById,
+  findTasks
 } = require('../../utils/taskUtils');
 
 const getTasks = async (req, res) => {
@@ -15,7 +12,6 @@ const getTasks = async (req, res) => {
 };
 
 const addTask = async (req, res) => {
-  console.log(req.body)
   const { _id } = req.user;
 
   const tasks = await Task.find({ columnId: req.body.columnId, date: req.body.date });
@@ -47,166 +43,57 @@ const deleteTask = async (req, res) => {
 };
 
 const updateTask = async (req, res) => {
-        console.log(req.body)
 
 
   if (req.body.operationType === 'updateTask') {
-    console.log('operationType: updateTask')
-  
-    const result = await Task.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
-    });
+    const result = await Task.findByIdAndUpdate(req.params.id, req.body, {new: true,})
 
     res.status(200).json(result)
   }
 
   if (req.body.operationType === 'replaceTask') {
 
-    console.log('operationType: replaceTask')
-
     const { source, destination } = req.body;
-
     const { columnId, date } = await Task.findById(source.id)
 
     if (!destination.id) {
-
-      console.log('operationType: replaceTask => to the end')
-
-
       const tasks = await Task.find({ columnId: columnId, date: date })
-      const tasksIncolumn = await Task.updateMany({ position: { $gt: source.position }, columnId: columnId, date: date }, { $inc: { position: -1 } })
-      console.log('tasksIncolumn: ', tasksIncolumn)
-
-      const replacedTask = await Task.findByIdAndUpdate(source.id, { position: tasks.length });
-      console.log('replacedTask: ', replacedTask)
-
+      await Task.updateMany({ position: { $gt: source.position }, columnId: columnId, date: date }, { $inc: { position: -1 } })
+      await Task.findByIdAndUpdate(source.id, { position: tasks.length });
     }
 
     if (source.position > destination.position) {
-
-      console.log('operationType: replaceTask => to the top')
-
-      
-      const tasksIncolumn = await Task.updateMany({ position: { $gte: destination.position, $lt: source.position }, columnId: columnId, date: date }, { $inc: { position: +1 } })
-      console.log('tasksIncolumn: ', tasksIncolumn)
-
-      const replacedTask = await Task.findByIdAndUpdate(source.id, { position: destination.position })
-      console.log('replacedTask: ', replacedTask)
-
+      await Task.updateMany({ position: { $gte: destination.position, $lt: source.position }, columnId: columnId, date: date }, { $inc: { position: +1 } })
+      await Task.findByIdAndUpdate(source.id, { position: destination.position })
     }
     
     if (source.position < destination.position) {
-
-      console.log('operationType: replaceTask => to the bottom')
-
-      
-      const tasksIncolumn = await Task.updateMany({ position: { $gt: source.position, $lte: destination.position }, columnId: columnId, date: date }, { $inc: { position: -1 } })
-      console.log('tasksIncolumn: ', tasksIncolumn)
-
-      const replacedTask = await Task.findByIdAndUpdate(source.id, { position: destination.position })
-      console.log('replacedTask: ', replacedTask)
-
+      await Task.updateMany({ position: { $gt: source.position, $lte: destination.position }, columnId: columnId, date: date }, { $inc: { position: -1 } })
+      await Task.findByIdAndUpdate(source.id, { position: destination.position })
     }
-    
 
     res.status(200).json({ message: 'Replaced' })
   }
 
   if (req.body.operationType === 'replaceColumnsTask') {
 
-    console.log('operationType: replaceColumnsTask')
-
-    const { source, destination } = req.body;
-
+    const { source, destination } = req.body
     const { date } = await Task.findById(source.id)
 
-
     if (!destination.id) {
-
-      console.log('operationType: replaceColumnsTask ==> to the end')
-
-        
       const tasks = await Task.find({ columnId: destination.columnId, date: date })
-
-      console.log(tasks)
-
-      // const tasksIncolumn = await Task.updateMany({ position: { $gte: destination.columnId }, columnId: destination.columnId }, { $inc: { position: +1 } })
-      // console.log('tasksIncolumn: ', tasksIncolumn)
-
-      const replacedTask = await Task.findByIdAndUpdate(source.id, { position: tasks.length, columnId: destination.columnId }, {new: true})
-      console.log('replacedTask: ', replacedTask)
-
-      
-      const tasksInSorcecolumn = await Task.updateMany({ position: { $gte: source.position }, columnId: source.columnId, date: date }, { $inc: { position: -1 } })
-            console.log('tasksInSorcecolumn: ', tasksInSorcecolumn)
-
-      
-      res.status(200).json({ message: 'Replaced' });
-
-
+      await Task.findByIdAndUpdate(source.id, { position: tasks.length, columnId: destination.columnId }, {new: true})      
+      await Task.updateMany({ position: { $gte: source.position }, columnId: source.columnId, date: date }, { $inc: { position: -1 } })
     } else {
-
-      const tasksIncolumn = await Task.updateMany({ position: { $gte: destination.position }, columnId: destination.columnId, date: date }, { $inc: { position: +1 } })
-      console.log('tasksIncolumn: ', tasksIncolumn)
-      
-
-      const replacedTask = await Task.findByIdAndUpdate(source.id, { position: destination.position, columnId: destination.columnId })
-      console.log('replacedTask: ', replacedTask)
-
-      const tasksInSorcecolumn = await Task.updateMany({ position: { $gte: source.position }, columnId: source.columnId, date: date }, { $inc: { position: -1 } })
-            console.log('tasksInSorcecolumn: ', tasksInSorcecolumn)
-
-
-
-      // await Task.bulkWrite([
-      //   { deleteOne: { filter: { _id: source.id } } },
-      //   {
-      //       updateMany: {
-      //           filter: { columnId: source.columnId, position: { $gt: source.position } },
-      //           update: { $inc: { idx: -1 } },
-      //       },
-      //   },
-      //   ])
-      // }
-
-      // const tasks = await Task.find({ columnId: newColumnId });
-      // const updTask = { columnId: newColumnId, position: tasks.length + 1 };
-      // await Task.findByIdAndUpdate(id, updTask);
-
-      res.status(200).json({ message: 'Replaced' });
+      await Task.updateMany({ position: { $gte: destination.position }, columnId: destination.columnId, date: date }, { $inc: { position: +1 } })
+      await Task.findByIdAndUpdate(source.id, { position: destination.position, columnId: destination.columnId })
+      await Task.updateMany({ position: { $gte: source.position }, columnId: source.columnId, date: date }, { $inc: { position: -1 } })
     }
+
+    res.status(200).json({ message: 'Replaced' })
+
   }
 };
-
-// const updateTask = async (req, res) => {
-  
-//   const result = await Task.findByIdAndUpdate(req.params.id, req.body, {
-//     new: true,
-//   });
-
-//   res.status(200).json(result);
-// };
-
-// const replaceTask = async (req, res) => {
-//   const { topTask, bottomTask } = req.body;
-
-//   await Task.findByIdAndUpdate(topTask.id, { position: bottomTask.position });
-//   await Task.findByIdAndUpdate(bottomTask.id, { position: topTask.position });
-
-//   res.status(200).json({ message: 'Replaced' });
-// };
-
-// const replaceColumnsTask = async (req, res) => {
-//   const { id, newColumnId } = req.body;
-
-//   const tasks = await Task.find({ columnId: newColumnId });
-
-//   const updTask = { columnId: newColumnId, position: tasks.length + 1 };
-
-//   await Task.findByIdAndUpdate(id, updTask);
-
-//   res.status(200).json({ message: 'Replaced' });
-// };
 
 
 module.exports = {
@@ -214,6 +101,4 @@ module.exports = {
   addTask,
   deleteTask,
   updateTask,
-  // replaceTask,
-  // replaceColumnsTask,
 }
