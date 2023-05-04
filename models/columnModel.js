@@ -1,7 +1,5 @@
 const { Schema, model } = require('mongoose');
 
-// const { PRIORITY, CATEGORY } = require('../constants/taskConstants');
-
 const columnSchema = Schema(
   {
     columnName: {

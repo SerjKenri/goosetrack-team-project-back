@@ -117,7 +117,6 @@ const postRestorePass = async (req, res, next) => {
 
   try {
     const resetUrl = `${process.env.FRONT_DEV_URL}/reset-pass/${otp}`;
-
     await new Email(user, resetUrl).sendPasswordRestore();
   } catch (err) {
     user.passwordResetToken = undefined;
