@@ -103,9 +103,6 @@ const postRestorePass = async (req, res, next) => {
   const user = await User.findOne({ email });
 
   if (!user) {
-    // return res.status(200).json({
-    //   message: 'Password reset instruction sent to email',
-    // });
     return res.status(200).json({
       message: 'No user with such email (temporary for FRONTEND)',
     });
@@ -116,8 +113,6 @@ const postRestorePass = async (req, res, next) => {
   await user.save({ validateBeforeSave: false });
 
   try {
-    // const resetUrl = `${process.env.DEV_URL}/api/auth/reset-pass/${otp}`;
-    // const resetUrl = `${process.env.DEV_URL}/goosetrack-team-project-front/reset-pass/${otp}`;
     const resetUrl = `${process.env.FRONT_DEV_URL}/goosetrack-team-project-front/reset-pass/${otp}`;
 
     await new Email(user, resetUrl).sendPasswordRestore();
