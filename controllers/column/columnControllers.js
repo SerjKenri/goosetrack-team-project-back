@@ -72,8 +72,7 @@ const updateColumn = async (req, res) => {
   }
 };
 
-module.expor
-ts = {
+module.exports = {
   getColumns,
   addColumn,
   deleteColumn,
