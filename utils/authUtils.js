@@ -23,8 +23,7 @@ const createUser = async body => {
 
     await new Email(
       newUser,
-      // `${process.env.DEV_URL}/api/auth/verify/${newUser.verificationToken}`
-      `${process.env.FRONT_DEV_URL}/goosetrack-team-project-front/verify/${newUser.verificationToken}`
+      `${process.env.FRONT_DEV_URL}/verify/${newUser.verificationToken}`
     ).sendVerification();
 
     return newUser;
@@ -59,8 +58,7 @@ const checkVerification = async body => {
 
     await new Email(
       userWithTokenExist,
-      // `${process.env.DEV_URL}/api/auth/verify/${userWithTokenExist.verificationToken}`
-      `${process.env.FRONT_DEV_URL}/goosetrack-team-project-front/verify/${userWithTokenExist.verificationToken}`
+      `${process.env.FRONT_DEV_URL}/verify/${userWithTokenExist.verificationToken}`
     ).sendVerification();
 
     return userWithTokenExist;
