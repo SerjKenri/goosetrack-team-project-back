@@ -82,7 +82,7 @@ const updateEmail = async (userId, newUser) => {
 
     await new Email(
       updateUserMail,
-      `${process.env.FRONT_DEV_URL}/goosetrack-team-project-front/verify/${verificationCode}`
+      `${process.env.FRONT_DEV_URL}/verify/${verificationCode}`
     ).sendVerification();
 
     logoutUserFn(updateUserMail.id);
